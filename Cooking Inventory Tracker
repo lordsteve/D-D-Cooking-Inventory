@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>D&D Cooking Inventory Tracker</title>
+</head>
+<body>
+    <h1>D&D Cooking Inventory Tracker</h1>
+    <div id="result">Loading...</div>
+
+    <script>
+    
+        // Google Sheets API key and Sheet ID
+        const API_KEY = 'AIzaSyDGoVjsiA5J750npANFhPEo_wDsRhnkMCg'; // Replace with your actual API key
+        const SHEET_ID = '1mDumKt1M9ZJHQXz6GnxDDMr6T7vEWkV3y7djyf_e9W8'; // Replace with your actual Sheet ID
+
+        // Recipes with required ingredients
+        const recipes = {
+            "Simple Cake": {
+                flour: 2,
+                sugar: 1,
+                eggs: 2,
+                milk: 1,
+                butter: 1
+            },
+            "Pancakes": {
+                flour: 1,
+                milk: 1,
+                eggs: 1,
+                salt: 1
+            },
+            "Omelette": {
+                eggs: 3,
+                butter: 1,
+                salt: 1
+            }
+        };
+
+        // Fetch party inventory from Google Sheets
+        async function fetchInventory() {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${API_KEY}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            return parseInventoryData(data.values);
+        }
+
+        // Convert Google Sheets data to inventory object
+        function parseInventoryData(data) {
+            const inventory = {};
+            data.slice(1).forEach(row => { // Skip the header row
+                const [ingredient, quantity] = row;
+                inventory[ingredient.toLowerCase()] = parseInt(quantity, 10);
+            });
+            return inventory;
+        }
+
+        // Function to check if party has enough ingredients
+        function checkRecipes(partyInventory, recipes) {
+            let resultHTML = "<h2>Recipe Check</h2>";
+
+            for (const [recipeName, ingredients] of Object.entries(recipes)) {
+                let canMake = true;
+                let missingIngredients = [];
+
+                for (const [ingredient, amountNeeded] of Object.entries(ingredients)) {
+                    if (!partyInventory[ingredient] || partyInventory[ingredient] < amountNeeded) {
+                        canMake = false;
+                        missingIngredients.push(`${ingredient} (need ${amountNeeded}, have ${partyInventory[ingredient] || 0})`);
+                    }
+                }
+
+                resultHTML += `<h3>${recipeName}</h3>`;
+                if (canMake) {
+                    resultHTML += "<p>You have all the ingredients to make this recipe!</p>";
+                } else {
+                    resultHTML += "<p>Missing ingredients:</p><ul>";
+                    missingIngredients.forEach(item => {
+                        resultHTML += `<li>${item}</li>`;
+                    });
+                    resultHTML += "</ul>";
+                }
+            }
+            document.getElementById("result").innerHTML = resultHTML;
+        }
+
+        // Initialize: Fetch inventory and check recipes
+        async function init() {
+            const partyInventory = await fetchInventory();
+            checkRecipes(partyInventory, recipes);
+        }
+
+        // Run the program
+        init();
+    </script>
+</body>
+</html>
