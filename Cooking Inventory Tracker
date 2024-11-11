@@ -11,8 +11,8 @@
     <script>
     
         // Google Sheets API key and Sheet ID
-        const API_KEY = 'AIzaSyDGoVjsiA5J750npANFhPEo_wDsRhnkMCg'; // Replace with your actual API key
-        const SHEET_ID = '1mDumKt1M9ZJHQXz6GnxDDMr6T7vEWkV3y7djyf_e9W8'; // Replace with your actual Sheet ID
+        const API_KEY = 'API_KEY'; // Replace with your actual API key
+        const SHEET_ID = 'SHEET_ID'; // Replace with your actual Sheet ID
 
         // Recipes with required ingredients
         const recipes = {
