@@ -3,16 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <title>D&D Cooking Inventory Tracker</title>
+<style>
+    /* Basic styling for the body */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0e6d2;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+    }
+
+    /* Container for tracker content */
+    #tracker-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 800px;
+        margin: 0 auto; /* Centers container on the page */
+    }
+
+    /* Styling for main header */
+    h1 {
+        font-size: 2em;
+        color: #3a3a3a;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Result and inventory sections */
+    #result, #inventory {
+        background-color: #fff;
+        padding: 20px;
+        border: 2px solid #b5651d;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 600px;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    /* Header for recipe check and inventory */
+    h2 {
+        color: #b5651d;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #b5651d;
+        padding-bottom: 5px;
+    }
+
+    /* Sub-header for each recipe name */
+    h3 {
+        font-size: 1.2em;
+        color: #333;
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+
+    /* Paragraph for ingredient availability message */
+    p.available {
+        color: #228b22; /* Green text if recipe can be made */
+        margin: 0;
+    }
+
+    p.missing {
+        color: #a52a2a; /* Red text if ingredients are missing */
+        margin: 0;
+    }
+
+    /* Styling for missing ingredients list */
+    ul {
+        list-style-type: square;
+        margin-left: 20px;
+        color: #a52a2a;
+    }
+
+    li {
+        margin: 5px 0;
+    }
+</style>
 </head>
 <body>
-    <h1>D&D Cooking Inventory Tracker</h1>
-    <div id="result">Loading...</div>
-
+    <div id="tracker-container">
+        <h1>D&D Cooking Inventory Tracker</h1>
+        <div id="result">Loading...</div>
+        <div id="inventory">Loading inventory...</div>
+    </div>
     <script>
-    
         // Google Sheets API key and Sheet ID
-        const API_KEY = 'API_KEY'; // Replace with your actual API key
-        const SHEET_ID = 'SHEET_ID'; // Replace with your actual Sheet ID
+        const API_KEY = 'AIzaSyDGoVjsiA5J750npANFhPEo_wDsRhnkMCg'; // Replace with your actual API key
+        const SHEET_ID = '1mDumKt1M9ZJHQXz6GnxDDMr6T7vEWkV3y7djyf_e9W8'; // Replace with your actual Sheet ID
 
         // Recipes with required ingredients
         const recipes = {
@@ -71,9 +150,9 @@
 
                 resultHTML += `<h3>${recipeName}</h3>`;
                 if (canMake) {
-                    resultHTML += "<p>You have all the ingredients to make this recipe!</p>";
+                    resultHTML += `<p class="available">You have all the ingredients to make this recipe!</p>`;
                 } else {
-                    resultHTML += "<p>Missing ingredients:</p><ul>";
+                    resultHTML += `<p class="missing">Missing ingredients:</p><ul>`;
                     missingIngredients.forEach(item => {
                         resultHTML += `<li>${item}</li>`;
                     });
@@ -83,10 +162,21 @@
             document.getElementById("result").innerHTML = resultHTML;
         }
 
+        // Function to display inventory
+        function displayInventory(partyInventory) {
+            let inventoryHTML = "<h2>Party Inventory</h2><ul>";
+            for (const [ingredient, quantity] of Object.entries(partyInventory)) {
+                inventoryHTML += `<li>${ingredient}: ${quantity}</li>`;
+            }
+            inventoryHTML += "</ul>";
+            document.getElementById("inventory").innerHTML = inventoryHTML;
+        }
+
         // Initialize: Fetch inventory and check recipes
         async function init() {
             const partyInventory = await fetchInventory();
             checkRecipes(partyInventory, recipes);
+            displayInventory(partyInventory); // Display inventory below results
         }
 
         // Run the program
