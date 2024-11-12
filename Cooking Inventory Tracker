@@ -73,7 +73,7 @@
     /* Styling for missing ingredients list */
     ul {
         list-style-type: square;
-        margin-left: 20px;
+        margin-left: 10px;
         color: #a52a2a;
     }
 
@@ -93,27 +93,133 @@
         const API_KEY = 'AIzaSyDGoVjsiA5J750npANFhPEo_wDsRhnkMCg'; // Replace with your actual API key
         const SHEET_ID = '1mDumKt1M9ZJHQXz6GnxDDMr6T7vEWkV3y7djyf_e9W8'; // Replace with your actual Sheet ID
 
-        // Recipes with required ingredients
-        const recipes = {
-            "Simple Cake": {
-                flour: 2,
-                sugar: 1,
-                eggs: 2,
-                milk: 1,
-                butter: 1
-            },
-            "Pancakes": {
-                flour: 1,
-                milk: 1,
-                eggs: 1,
-                salt: 1
-            },
-            "Omelette": {
-                eggs: 3,
-                butter: 1,
-                salt: 1
-            }
-        };
+// Recipes with required ingredients
+const recipes = {
+    "Basic Rice Pilaf": {
+        rice: 1,
+        onion: 1,
+        salt: 1,
+        butter: 1,
+        herbs: 1
+    },
+    "Herb Crusted Fish": {
+        fish: 1,
+        herbs: 1,
+        lemon: 1,
+        salt: 1,
+        oil: 1
+    },
+    "Herb Flatbread": {
+        flour: 1,
+        water: 1,
+        salt: 1,
+        herbs: 1,
+        oil: 1
+    },
+    "Honey Glazed Carrots": {
+        carrots: 1,
+        honey: 1,
+        butter: 1,
+        salt: 1,
+        pepper: 1
+    },
+    "Lemon Herb Roasted Mushrooms": {
+        mushrooms: 1,
+        herbs: 1,
+        lemon: 1,
+        oil: 1,
+        salt: 1
+    },
+    "Mushroom and Onion Saute": {
+        mushrooms: 1,
+        onion: 1,
+        butter: 1,
+        salt: 1,
+        pepper: 1
+    },
+    "Omelette": {
+        eggs: 3,
+        butter: 1,
+        salt: 1
+    },
+    "Pancakes": {
+        flour: 1,
+        milk: 1,
+        eggs: 1,
+        salt: 1
+    },
+    "Potato Leek Soup": {
+        potatoes: 1,
+        leeks: 1,
+        water: 1,
+        salt: 1,
+        pepper: 1
+    },
+    "Roasted Root Vegetables": {
+        turnips: 1,
+        parsnips: 1,
+        carrots: 1,
+        salt: 1,
+        oil: 1
+    },
+    "Savory Meat Veggie Stew": {
+        meat: 1,
+        carrots: 1,
+        potatoes: 1,
+        onion: 1,
+        salt: 1,
+        water: 1
+    },
+    "Scrambled Eggs": {
+        eggs: 1,
+        salt: 1,
+        pepper: 1,
+        butter: 1,
+        herbs: 1
+    },
+    "Simple Cake": {
+        flour: 2,
+        sugar: 1,
+        eggs: 2,
+        milk: 1,
+        butter: 1
+    },
+    "Spiced Meat Patties": {
+        meat: 1,
+        paprika: 1,
+        garlic: 1,
+        salt: 1,
+        pepper: 1
+    },
+    "Spiced Porridge": {
+        grains: 1,
+        water: 1,
+        cinnamon: 1,
+        honey: 1,
+        fruit: 1
+    },
+    "Stewed Beans With Herbs": {
+        beans: 1,
+        onion: 1,
+        salt: 1,
+        herbs: 1,
+        water: 1
+    },
+    "Sweet Trail Mix": {
+        berries: 1,
+        nuts: 1,
+        honey: 1,
+        cinnamon: 1
+    },
+    "Wild Greens Salad": {
+        greens: 1,
+        fruit: 1,
+        nuts: 1,
+        vinegar: 1,
+        oil: 1
+    }
+};
+
 
         // Fetch party inventory from Google Sheets
         async function fetchInventory() {
