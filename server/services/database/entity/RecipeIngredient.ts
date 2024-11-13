@@ -17,11 +17,16 @@ export class RecipeIngredient {
     @Column()
     public quantity!: number;
 
-    @ManyToOne(() => Recipe, (recipe) => recipe.recipeIngredients)
+    @ManyToOne(() => Recipe, (recipe) => recipe.recipeIngredients, {
+        onDelete: 'CASCADE'
+    })
     @JoinTable()
     public recipe!: Recipe;
 
-    @ManyToOne(() => Ingredient, (ingredient) => ingredient.recipeIngredients, {eager: true})
+    @ManyToOne(() => Ingredient, (ingredient) => ingredient.recipeIngredients, {
+        eager: true,
+        onDelete: 'CASCADE'
+    })
     @JoinTable()
     public ingredient!: Ingredient;
 }

@@ -13,7 +13,9 @@ export class Ingredient {
     @Column()
     description!: string
 
-    @OneToMany(() => RecipeIngredient, recipeToIngredient => recipeToIngredient.ingredient)
+    @OneToMany(() => RecipeIngredient, recipeToIngredient => recipeToIngredient.ingredient, {
+        onDelete: 'CASCADE'
+    })
     @JoinTable()
     recipeIngredients!: RecipeIngredient[]
 }

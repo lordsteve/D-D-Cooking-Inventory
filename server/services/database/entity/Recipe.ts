@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 import { RecipeIngredient } from "./RecipeIngredient"
 
 @Entity()
@@ -13,7 +13,10 @@ export class Recipe {
     @Column()
     description!: string
 
-    @OneToMany(() => RecipeIngredient, recipeToIngredient => recipeToIngredient.recipe, {eager: true})
+    @OneToMany(() => RecipeIngredient, recipeToIngredient => recipeToIngredient.recipe, {
+        eager: true, 
+        cascade: true
+    })
     @JoinTable()
     recipeIngredients!: RecipeIngredient[]
 
