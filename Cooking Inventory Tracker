@@ -18,7 +18,7 @@
         align-items: flex-start; /* Align items at the top */
         margin: 0 auto; /* Centers container on the page */
         gap: 20px; /* Add some spacing between the two containers */
-    justify-content: center; /* Center the divs horizontally */
+        justify-content: center; /* Center the divs horizontally */
       }
 
       /* Result and inventory sections */
@@ -29,7 +29,8 @@
         border: 2px solid #b5651d;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        
+        align-items: flex-start;
+        margin: 0 auto;
       }
 
       /* Styling for main header */
@@ -99,11 +100,10 @@
 
       hr.recipe-divider {
         border: solid 1px lightgrey; /* Set color and thickness */
-        margin: 20px 0 20px 0; /* Add space around the divider */ 
-        width: 50%; 
+        margin: 20px 0 20px 0; /* Add space around the divider */
+        width: 50%;
         margin: auto;
       }
-      
     </style>
   </head>
   <body>
@@ -112,249 +112,268 @@
       <div id="inventory">Loading inventory...</div>
     </div>
     <script>
-        // Google Sheets API key and Sheet ID
-        const API_KEY = "AIzaSyDGoVjsiA5J750npANFhPEo_wDsRhnkMCg" // Replace with your actual API key
-        const SHEET_ID = "1mDumKt1M9ZJHQXz6GnxDDMr6T7vEWkV3y7djyf_e9W8" // Replace with your actual Sheet ID
+      // Google Sheets API key and Sheet ID
+      const API_KEY = "AIzaSyDGoVjsiA5J750npANFhPEo_wDsRhnkMCg" // Replace with your actual API key
+      const SHEET_ID = "1mDumKt1M9ZJHQXz6GnxDDMr6T7vEWkV3y7djyf_e9W8" // Replace with your actual Sheet ID
 
-        // Recipes with required ingredients
-        const recipes = {
-          "Bugbear (or Goblin) Ribs": {
-            spices: 1,
-            fat: 2,
-            ribs: 12,
-            benefits: "Gain 30 feet of darkvision for 8 hours.",
-            downsides:
-              "For 8 hours, you must kill any creature you reduce to 0 hit points.",
-            skillCheck: "Nature 10",
-          },
+      // Recipes with required ingredients
+      const recipes = {
+        "Bugbear (or Goblin) Ribs": {
+          spices: 1,
+          fat: 2,
+          ribs: 12,
+          benefits: "Gain 30 feet of darkvision for 8 hours.",
+          downsides:
+            "For 8 hours, you must kill any creature you reduce to 0 hit points.",
+          skillCheck: "Nature 10",
+        },
 
-          "Centipede Curry": {
-            spices: 1,
-            tomatoes: 6,
-            onions: 4,
-            potatoes: 4,
-            rice: 6,
-            fat: 2,
-            benefits: "For 24 hours, beasts and monstrosities with Intelligence 6 or lower will avert their eyes from you within 30 feet.",
-            downsides: "For 24 hours, looking at your reflection stuns you for 1 minute.",
-            skillCheck: "Arcana 12",
-          },
+        "Centipede Curry": {
+          spices: 1,
+          tomatoes: 6,
+          onions: 4,
+          potatoes: 4,
+          rice: 6,
+          fat: 2,
+          benefits:
+            "For 24 hours, beasts and monstrosities with Intelligence 6 or lower will avert their eyes from you within 30 feet.",
+          downsides:
+            "For 24 hours, looking at your reflection stuns you for 1 minute.",
+          skillCheck: "Arcana 12",
+        },
 
-          "Almond Breaded Spider": {
-            nuts: 1,
-            fat: 2,
-            bread: 2,
-            rice: 6,
-            spider: 1,
-            benefits: "Roll a DC 12 Constitution saving throw. On success, gain knowledge of the spider's tunnel network.",
-            downsides: "On failure, all hits against you while prone are critical for 8 hours.",
-            skillCheck: "Nature 11",
-          },
+        "Almond Breaded Spider": {
+          nuts: 1,
+          fat: 2,
+          bread: 2,
+          rice: 6,
+          spider: 1,
+          benefits:
+            "Roll a DC 12 Constitution saving throw. On success, gain knowledge of the spider's tunnel network.",
+          downsides:
+            "On failure, all hits against you while prone are critical for 8 hours.",
+          skillCheck: "Nature 11",
+        },
 
-          "Chuul Claw Toast": {
-            bread: 6,
-            fat: 2,
-            spices: 1,
-            lemon: 1,
-            cthuul: 1,
-            benefits: "Gain resistance to poison damage and immunity to the poisoned condition for 8 hours.",
-            downsides: "Automatically fail any saving throws against paralysis for 8 hours.",
-            skillCheck: "Arcana 12",
-          },
+        "Chuul Claw Toast": {
+          bread: 6,
+          fat: 2,
+          spices: 1,
+          lemon: 1,
+          cthuul: 1,
+          benefits:
+            "Gain resistance to poison damage and immunity to the poisoned condition for 8 hours.",
+          downsides:
+            "Automatically fail any saving throws against paralysis for 8 hours.",
+          skillCheck: "Arcana 12",
+        },
 
-          "Skeleton Bone Broth": {
-            salt: 1,
-            spices: 1,
-            tomatoes: 6,
-            potatoes: 6,
-            rice: 6,
-            bones: 6,
-            benefits: "For 8 hours, gain immunity to scrying and effects that sense emotions, read thoughts, or detect location.",
-            downsides: "Taking psychic or radiant damage ends the Benefits and causes you to fall unconscious for 1 round.",
-            skillCheck: "Religion 12",
-          },
+        "Skeleton Bone Broth": {
+          salt: 1,
+          spices: 1,
+          tomatoes: 6,
+          potatoes: 6,
+          rice: 6,
+          bones: 6,
+          benefits:
+            "For 8 hours, gain immunity to scrying and effects that sense emotions, read thoughts, or detect location.",
+          downsides:
+            "Taking psychic or radiant damage ends the Benefits and causes you to fall unconscious for 1 round.",
+          skillCheck: "Religion 12",
+        },
 
-          "Displacer Beast Hash": {
-            potatoes: 6,
-            flour: 2,
-            peppers: 6,
-            onions: 4,
-            displacer: 1,
-            fat: 2,
-            benefits: "For 8 hours, successful saving throws to take half damage instead reduce damage to 0. If you have a similar feature, choose which to apply.",
-            downsides: "For 24 hours, automatically fail any checks or saves to recognize illusions.",
-            skillCheck: "Arcana 12",
-          },
+        "Displacer Beast Hash": {
+          potatoes: 6,
+          flour: 2,
+          peppers: 6,
+          onions: 4,
+          displacer: 1,
+          fat: 2,
+          benefits:
+            "For 8 hours, successful saving throws to take half damage instead reduce damage to 0. If you have a similar feature, choose which to apply.",
+          downsides:
+            "For 24 hours, automatically fail any checks or saves to recognize illusions.",
+          skillCheck: "Arcana 12",
+        },
 
-          "Dryad Greens": {
-            vinegar: 1,
-            tomatoes: 6,
-            carrots: 6,
-            greens: 6,
-            benefits: "On a DC 12 Nature check, gain the ability to communicate with beasts and plants as if sharing a language for 7 days (limited by their intelligence).",
-            downsides: "For 24 hours, you can only speak and write in Sylvan.",
-            skillCheck: "Nature 11",
-          },
+        "Dryad Greens": {
+          vinegar: 1,
+          tomatoes: 6,
+          carrots: 6,
+          greens: 6,
+          benefits:
+            "On a DC 12 Nature check, gain the ability to communicate with beasts and plants as if sharing a language for 7 days (limited by their intelligence).",
+          downsides: "For 24 hours, you can only speak and write in Sylvan.",
+          skillCheck: "Nature 11",
+        },
 
-          "Fungi Stir-fry": {
-            greens: 6,
-            carrots: 6,
-            peppers: 6,
-            salt: 1,
-            fat: 2,
-            mushrooms: 6,
-            benefits: "One hour after eating, you fall under the effects of a feign death spell.",
-            downsides: "If spoiled, the fungi has a 50% chance to revivify on the spot.",
-            skillCheck: "Nature 10",
-          },
+        "Fungi Stir-fry": {
+          greens: 6,
+          carrots: 6,
+          peppers: 6,
+          salt: 1,
+          fat: 2,
+          mushrooms: 6,
+          benefits:
+            "One hour after eating, you fall under the effects of a feign death spell.",
+          downsides:
+            "If spoiled, the fungi has a 50% chance to revivify on the spot.",
+          skillCheck: "Nature 10",
+        },
 
-          "Night Hag Cupcakes": {
-            flour: 1,
-            sugar: 1,
-            fruits: 6,
-            chocolate: 6,
-            nuts: 6,
-            benefits: "While carrying the heartstone, you can use an action to enter or exit the Ethereal Plane. The heartstone disintegrates after 30 days.",
-            downsides: "If you die with the heartstone on you, resurrection becomes impossible.",
-            skillCheck: "Religion 16",
-          },
+        "Night Hag Cupcakes": {
+          flour: 1,
+          sugar: 1,
+          fruits: 6,
+          chocolate: 6,
+          nuts: 6,
+          benefits:
+            "While carrying the heartstone, you can use an action to enter or exit the Ethereal Plane. The heartstone disintegrates after 30 days.",
+          downsides:
+            "If you die with the heartstone on you, resurrection becomes impossible.",
+          skillCheck: "Religion 16",
+        },
 
-          "Intellect Devourer Paella": {
-            rice: 6,
-            saffron: 1,
-            peppers: 6,
-            mushrooms: 6,
-            onions: 6,
-            devourer: 1,
-            benefits: "Eating the left side grants advantage on your next Intelligence check; eating the right side grants advantage on your next Wisdom (Insight) check.",
-            downsides: "Eating the left side gives disadvantage on your next Wisdom (Insight) check; eating the right side gives disadvantage on your next Intelligence check.",
-            skillCheck: "Arcana 11",
-          },
+        "Intellect Devourer Paella": {
+          rice: 6,
+          saffron: 1,
+          peppers: 6,
+          mushrooms: 6,
+          onions: 6,
+          devourer: 1,
+          benefits:
+            "Eating the left side grants advantage on your next Intelligence check; eating the right side grants advantage on your next Wisdom (Insight) check.",
+          downsides:
+            "Eating the left side gives disadvantage on your next Wisdom (Insight) check; eating the right side gives disadvantage on your next Intelligence check.",
+          skillCheck: "Arcana 11",
+        },
 
-          "Gelatinous Cube Preserves": {
-            sugar: 6,
-            benefits: "For 8 hours, you and your gear are transparent. While stationary, it takes a DC 15 Wisdom (Perception) check to spot you.",
-            downsides: "For 8 hours, you have disadvantage on saving throws against slipping, sliding, or forced movement.",
-            skillCheck: "Arcana 11",
-          },
+        "Gelatinous Cube Preserves": {
+          sugar: 6,
+          benefits:
+            "For 8 hours, you and your gear are transparent. While stationary, it takes a DC 15 Wisdom (Perception) check to spot you.",
+          downsides:
+            "For 8 hours, you have disadvantage on saving throws against slipping, sliding, or forced movement.",
+          skillCheck: "Arcana 11",
+        },
 
-          "Roasted Root Vegetables": {
-            potatoes: 6,
-            carrots: 6,
-            onions: 6,
-            mushrooms: 6,
-            fat: 1,
-            benefits: "For 24 hours, you get +10 temporary HP and advantage on all CON saves.",
-            downsides: "None",
-            skillCheck: "Nature 5",
-          },
+        "Roasted Root Vegetables": {
+          potatoes: 6,
+          carrots: 6,
+          onions: 6,
+          mushrooms: 6,
+          fat: 1,
+          benefits:
+            "For 24 hours, you get +10 temporary HP and advantage on all CON saves.",
+          downsides: "None",
+          skillCheck: "Nature 5",
+        },
 
-          "Simple Egg Scramble": {
-            eggs: 6,
-            spices: 1,
-            peppers: 6,
-            mushrooms: 6,
-            benefits: "For 24 hours, you get +10 temporary HP and advantage on all CON saves.",
-            downsides: "None",
-            skillCheck: "Nature 5",
-          },
+        "Simple Egg Scramble": {
+          eggs: 6,
+          spices: 1,
+          peppers: 6,
+          mushrooms: 6,
+          benefits:
+            "For 24 hours, you get +10 temporary HP and advantage on all CON saves.",
+          downsides: "None",
+          skillCheck: "Nature 5",
+        },
 
-          "Spiced Meat Patties": {
-            spices: 1,
-            garlic: 1,
-            peppers: 6,
-            meat: 6,
-            benefits: "For 24 hours, you get +10 temporary HP and advantage on all CON saves.",
-            downsides: "None",
-            skillCheck: "Nature 5",
-          },
-        }
+        "Spiced Meat Patties": {
+          spices: 1,
+          garlic: 1,
+          peppers: 6,
+          meat: 6,
+          benefits:
+            "For 24 hours, you get +10 temporary HP and advantage on all CON saves.",
+          downsides: "None",
+          skillCheck: "Nature 5",
+        },
+      }
 
-        // Fetch party inventory from Google Sheets
-        async function fetchInventory() {
-          const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${API_KEY}`
-          const response = await fetch(url)
-          const data = await response.json()
-          return parseInventoryData(data.values)
-        }
+      // Fetch party inventory from Google Sheets
+      async function fetchInventory() {
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${API_KEY}`
+        const response = await fetch(url)
+        const data = await response.json()
+        return parseInventoryData(data.values)
+      }
 
-        // Convert Google Sheets data to inventory object
-        function parseInventoryData(data) {
-          const inventory = {}
-          data.slice(1).forEach((row) => {
-            // Skip the header row
-            const [ingredient, quantity] = row
-            inventory[ingredient.toLowerCase()] = parseInt(quantity, 10)
-          })
-          return inventory
-        }
+      // Convert Google Sheets data to inventory object
+      function parseInventoryData(data) {
+        const inventory = {}
+        data.slice(1).forEach((row) => {
+          // Skip the header row
+          const [ingredient, quantity] = row
+          inventory[ingredient.toLowerCase()] = parseInt(quantity, 10)
+        })
+        return inventory
+      }
 
-        function checkRecipes(partyInventory, recipes) {
-          let resultHTML = "<h2>Recipe Check</h2>"
+      function checkRecipes(partyInventory, recipes) {
+        let resultHTML = "<h2>Recipe Check</h2>"
 
-          for (const [recipeName, recipeDetails] of Object.entries(recipes)) {
-            let canMake = true
-            let missingIngredients = []
+        for (const [recipeName, recipeDetails] of Object.entries(recipes)) {
+          let canMake = true
+          let missingIngredients = []
 
-            for (const [ingredient, amountNeeded] of Object.entries(
-              recipeDetails,
-            )) {
-              if (typeof amountNeeded === "number") {
-                if (
-                  !partyInventory[ingredient] ||
-                  partyInventory[ingredient] < amountNeeded
-                ) {
-                  canMake = false
-                  missingIngredients.push(
-                    `${ingredient} (need ${amountNeeded}, have ${partyInventory[ingredient] || 0})`,
-                  )
-                }
+          for (const [ingredient, amountNeeded] of Object.entries(
+            recipeDetails,
+          )) {
+            if (typeof amountNeeded === "number") {
+              if (
+                !partyInventory[ingredient] ||
+                partyInventory[ingredient] < amountNeeded
+              ) {
+                canMake = false
+                missingIngredients.push(
+                  `${ingredient} (need ${amountNeeded}, have ${partyInventory[ingredient] || 0})`,
+                )
               }
             }
-
-            resultHTML += `<h3>${recipeName}</h3>`
-            if (canMake) {
-              resultHTML += `<p class="available">You have all the ingredients to make this recipe!</p>`
-            } else {
-              resultHTML += `<p class="missing">Missing ingredients:</p><ul>`
-              missingIngredients.forEach((item) => {
-                resultHTML += `<li>${item}</li>`
-              })
-              resultHTML += "</ul>"
-            }
-
-            // Add benefits, downsides, and skill check details
-            resultHTML += `<p><strong>Benefits:</strong> ${recipeDetails.benefits}</p>`
-            resultHTML += `<p><strong>Downsides:</strong> ${recipeDetails.downsides}</p>`
-            resultHTML += `<p><strong>Skill Check:</strong> ${recipeDetails.skillCheck}</p>`
-                                    resultHTML += `<hr class="recipe-divider">`;
-
           }
 
-          document.getElementById("result").innerHTML = resultHTML
-          
-        }
-
-
-        // Function to display inventory
-        function displayInventory(partyInventory) {
-          let inventoryHTML = "<h2>Party Inventory</h2><ul>"
-          for (const [ingredient, quantity] of Object.entries(partyInventory)) {
-            inventoryHTML += `<li>${ingredient}: ${quantity}</li>`
+          resultHTML += `<h3>${recipeName}</h3>`
+          if (canMake) {
+            resultHTML += `<p class="available">You have all the ingredients to make this recipe!</p>`
+          } else {
+            resultHTML += `<p class="missing">Missing ingredients:</p><ul>`
+            missingIngredients.forEach((item) => {
+              resultHTML += `<li>${item}</li>`
+            })
+            resultHTML += "</ul>"
           }
-          inventoryHTML += "</ul>"
-          document.getElementById("inventory").innerHTML = inventoryHTML
+
+          // Add benefits, downsides, and skill check details
+          resultHTML += `<p><strong>Benefits:</strong> ${recipeDetails.benefits}</p>`
+          resultHTML += `<p><strong>Downsides:</strong> ${recipeDetails.downsides}</p>`
+          resultHTML += `<p><strong>Skill Check:</strong> ${recipeDetails.skillCheck}</p>`
+          resultHTML += `<hr class="recipe-divider">`
         }
 
-        // Initialize: Fetch inventory and check recipes
-        async function init() {
-          const partyInventory = await fetchInventory()
-          checkRecipes(partyInventory, recipes)
-          displayInventory(partyInventory) // Display inventory below results
-        }
+        document.getElementById("result").innerHTML = resultHTML
+      }
 
-        // Run the program
-        init()
+      // Function to display inventory
+      function displayInventory(partyInventory) {
+        let inventoryHTML = "<h2>Party Inventory</h2><ul>"
+        for (const [ingredient, quantity] of Object.entries(partyInventory)) {
+          inventoryHTML += `<li>${ingredient}: ${quantity}</li>`
+        }
+        inventoryHTML += "</ul>"
+        document.getElementById("inventory").innerHTML = inventoryHTML
+      }
+
+      // Initialize: Fetch inventory and check recipes
+      async function init() {
+        const partyInventory = await fetchInventory()
+        checkRecipes(partyInventory, recipes)
+        displayInventory(partyInventory) // Display inventory below results
+      }
+
+      // Run the program
+      init()
     </script>
   </body>
 </html>
