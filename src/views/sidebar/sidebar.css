@@ -1,0 +1,31 @@
+el-sidebar {
+    background-color: #333;
+    color: #fff;
+}
+
+el-sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+el-sidebar li {
+    padding: 10px 0;
+}
+
+el-sidebar a {
+    display: block;
+    padding: 14px 16px;
+    color: #fff;
+    text-decoration: none;
+}
+
+el-sidebar a:hover {
+    color: #fff;
+    background-color: #0000005e;
+}
+
+@media screen and (min-width: 768px) {
+    el-sidebar {
+        min-width: 200px;
+    }
+}
