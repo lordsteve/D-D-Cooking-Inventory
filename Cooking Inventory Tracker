@@ -4,58 +4,40 @@
     <meta charset="UTF-8" />
     <title>D&D Cooking Inventory Tracker</title>
     <style>
-      /* Basic styling for the body */
-      body {
+      /* Basic styling for the body within the tracker */
+      #dnd-cooking-tracker {
         font-family: "Arial", sans-serif;
         color: #333;
-        margin: 0;
-        padding: 20px;
         font-size: 14px;
       }
 
       /* Container for tracker content */
-      #tracker-container {
-        align-items: flex-start; /* Align items at the top */
-        margin: 0 auto; /* Centers container on the page */
-        gap: 20px; /* Add some spacing between the two containers */
-        justify-content: center; /* Center the divs horizontally */
-      }
-
-      /* Result and inventory sections */
-      #result,
-      #inventory {
-        background-color: #fff;
-        padding: 20px;
-        border: 2px solid #b5651d;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      #dnd-cooking-tracker #tracker-container {
         align-items: flex-start;
-        margin: 0 auto;
-      }
-
-      /* Styling for main header */
-      h1 {
-        font-size: 2em;
-        color: #3a3a3a;
-        margin-bottom: 20px;
-        text-align: center;
+        gap: 20px;
+        justify-content: center;
       }
 
       /* Result and inventory sections */
-      #result,
-      #inventory {
+      #dnd-cooking-tracker #result,
+      #dnd-cooking-tracker #inventory {
         background-color: #fff;
         padding: 20px;
         border: 2px solid #b5651d;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        max-width: 600px;
         width: 100%;
         margin-top: 20px;
       }
 
-      /* Header for recipe check and inventory */
-      h2 {
+      /* Header styling */
+      #dnd-cooking-tracker h1 {
+        font-size: 2em;
+        color: #3a3a3a;
+        text-align: center;
+      }
+
+      #dnd-cooking-tracker h2 {
         color: #b5651d;
         font-size: 1.5em;
         margin-bottom: 15px;
@@ -63,53 +45,46 @@
         padding-bottom: 5px;
       }
 
-      /* Sub-header for each recipe name */
-      h3 {
+      #dnd-cooking-tracker h3 {
         font-size: 1.3em;
         color: #333;
         margin-top: 35px;
-        margin-bottom: 5px;
       }
 
-      /* Paragraph for ingredient availability message */
-      p.available {
-        color: #228b22; /* Green text if recipe can be made */
-        margin: 0;
-        font-size: 14px;
+      /* Ingredient availability styling */
+      #dnd-cooking-tracker p.available {
+        color: #228b22;
         font-weight: 700;
       }
 
-      p.missing {
-        color: #a52a2a; /* Red text if ingredients are missing */
-        margin: 0;
-        font-size: 14px;
+      #dnd-cooking-tracker p.missing {
+        color: #a52a2a;
       }
 
       /* Styling for missing ingredients list */
-      ul {
+      #dnd-cooking-tracker ul {
         list-style-type: square;
-        margin-left: 10px;
         color: #a52a2a;
         font-size: 14px;
       }
 
-      li {
+      #dnd-cooking-tracker li {
         margin: 5px 0;
-        font-size: 14px;
       }
 
-      hr.recipe-divider {
-        border: solid 1px lightgrey; /* Set color and thickness */
-        margin: 20px 0 20px 0; /* Add space around the divider */
+      #dnd-cooking-tracker hr.recipe-divider {
+        border: solid 1px lightgrey;
         width: 50%;
-        margin: auto;
+        margin: 20px auto;
       }
+      
     </style>
   </head>
   <body>
-    <div id="tracker-container">
-      <div id="result">Loading...</div>
-      <div id="inventory">Loading inventory...</div>
+    <div id="dnd-cooking-tracker">
+      <div id="tracker-container">
+        <div id="result">Loading...</div>
+        <div id="inventory">Loading inventory...</div>
     </div>
     <script>
       // Google Sheets API key and Sheet ID
