@@ -34,7 +34,6 @@ export default function home() {
                     <button id="delete-recipe-${recipe.id}"><span class="fa fa-trash"></span></button>
                 </div>
             `);
-            console.log(recipeEl);
             if (!el.inputs) return;
             el.inputs.id(`description-${recipe.id}`).onkeydown = (e) => {
                 if (e.key !== 'Enter') return;
@@ -331,7 +330,9 @@ export default function home() {
 
 async function checkInventory(recipeIngredients: RecipeIngredient[]) {
     const inventory = await fetchInventory()
-    let check: Node = html``;
+    let check: Node = html`
+        <p style="color:orange;">There are no ingredients for this recipe yet!</p>
+    `;
     recipeIngredients.forEach((recipeIngredient) => {
         const inventoryQuantity = inventory[recipeIngredient.ingredient.name.toLowerCase()] || 0;
         if (inventoryQuantity < recipeIngredient.quantity) {
@@ -344,5 +345,6 @@ async function checkInventory(recipeIngredients: RecipeIngredient[]) {
             `;
         }
     });
+    console.log(check);
     return check;
 }
