@@ -212,12 +212,13 @@ export default function home() {
                 recipeEl.appendChild(await checkInventory(recipe.recipeIngredients));
                 recipeEl.appendChild(html`<p>Ingredients:</p>`);
                 recipe.recipeIngredients.forEach(async (recipeIngredient) => {
+                    const { have, need } = await haveIngredient(recipeIngredient);
                     const ingElement = html`
                         <div class="ingredients">
                             <p title="${recipeIngredient.ingredient.description}">${recipeIngredient.ingredient.name}</p>
                             ${isAdmin
                                 ? `<input id="recipe-ingredient-quantity-${recipeIngredient.id}" type="number" value="${recipeIngredient.quantity}" />`
-                                : `<p style="color:${await haveIngredient(recipeIngredient) ? 'green' : 'red'}">${recipeIngredient.quantity}</p>`}
+                                : `<p style="color:${have >= need ? 'green' : 'red'}">${recipeIngredient.quantity} (have: ${have}, need: ${need})</p>`}
                             ${isAdmin
                                 ? `<button id="delete-recipe-ingredient-${recipeIngredient.id}"><span  class="fa fa-trash"></span></button>`
                                 : ''}
@@ -322,6 +323,5 @@ async function checkInventory(recipeIngredients: RecipeIngredient[]) {
 
 async function haveIngredient(recipeIngredient: RecipeIngredient) {
     const inventory = await fetchInventory();
-    const inventoryQuantity = inventory[recipeIngredient.ingredient.name.toLowerCase()] || 0;
-    return inventoryQuantity >= recipeIngredient.quantity;
+    return { have: inventory[recipeIngredient.ingredient.name.toLowerCase()] ?? 0, need: recipeIngredient.quantity };
 }

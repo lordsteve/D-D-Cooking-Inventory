@@ -179,7 +179,7 @@ h1 {
 .content-slate section {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
   padding: 1rem;
   border-radius: 5px;
