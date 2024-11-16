@@ -86,36 +86,7 @@ export default function home() {
                         recipeEl.remove();
                     });
                 }
-            recipeEl.appendChild(await checkInventory(recipe.recipeIngredients));
             recipeEl.appendChild(html`<p>Ingredients:</p>`);
-            recipe.recipeIngredients.forEach((recipeIngredient) => {
-                const ingElement = html`
-                    <div class="ingredients">
-                        <p title="${recipeIngredient.ingredient.description}">${recipeIngredient.ingredient.name}</p>
-                        <input id="recipe-ingredient-quantity-${recipeIngredient.id}" type="number" value="${recipeIngredient.quantity}" />
-                        <button id="delete-recipe-ingredient-${recipeIngredient.id}"><span  class="fa fa-trash"></span></button>
-                    </div>
-                `
-                recipeEl.appendChild(ingElement);
-                if (!el.inputs) return;
-                el.inputs.id(`recipe-ingredient-quantity-${recipeIngredient.id}`).onkeydown = (e) => {
-                    if (e.key !== 'Enter') return;
-                    const quantity = (e.target as HTMLInputElement).value;
-                    put<RecipeIngredient>('/data/update-recipe-ingredient', { id: recipeIngredient.id, quantity }).then(() => {});
-                }
-                el.inputs.id(`recipe-ingredient-quantity-${recipeIngredient.id}`).onblur = (e) => {
-                    const quantity = (e.target as HTMLInputElement).value;
-                    if (quantity === recipeIngredient.quantity.toString()) return;
-                    put<RecipeIngredient>('/data/update-recipe-ingredient', { id: recipeIngredient.id, quantity }).then(() => {});
-                }
-                const deleteIngButton = recipeEl.querySelector<HTMLButtonElement>(`#delete-recipe-ingredient-${recipeIngredient.id}`)
-                if (!deleteIngButton) return;
-                deleteIngButton.onclick = () => {
-                    del<RecipeIngredient>('/data/delete-ingredient', { id: recipeIngredient.id }).then(() => {
-                        ingElement.remove();
-                    });
-                }
-            });
             recipeEl.appendChild(html`
                 <form id="new-ingredient-${recipe.id}" style="display:flex;flex-direction:column;">
                     <input required type="text" placeholder="New Ingredient Name" name="ingredient-name">
@@ -345,6 +316,5 @@ async function checkInventory(recipeIngredients: RecipeIngredient[]) {
             `;
         }
     });
-    console.log(check);
     return check;
 }
