@@ -218,7 +218,7 @@ export default function home() {
                             <p title="${recipeIngredient.ingredient.description}">${recipeIngredient.ingredient.name}</p>
                             ${isAdmin
                                 ? `<input id="recipe-ingredient-quantity-${recipeIngredient.id}" type="number" value="${recipeIngredient.quantity}" />`
-                                : `<p style="color:${have >= need ? 'green' : 'red'}">${recipeIngredient.quantity} (have: ${have}, need: ${need})</p>`}
+                                : `<p style="color:${have >= need ? 'green' : 'red'}">(have: ${have}, need: ${need})</p>`}
                             ${isAdmin
                                 ? `<button id="delete-recipe-ingredient-${recipeIngredient.id}"><span  class="fa fa-trash"></span></button>`
                                 : ''}
