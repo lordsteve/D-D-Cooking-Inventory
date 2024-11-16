@@ -1,0 +1,9 @@
+.idea
+.vscode
+node_modules
+build
+tmp
+temp
+.env
+server/comp
+www/views
