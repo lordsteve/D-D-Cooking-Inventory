@@ -304,17 +304,18 @@ async function checkInventory(recipeIngredients: RecipeIngredient[]) {
     let check: Node = html`
         <p style="color:orange;">There are no ingredients for this recipe yet!</p>
     `;
-    recipeIngredients.forEach((recipeIngredient) => {
+    for (const recipeIngredient of recipeIngredients) {
         const inventoryQuantity = inventory[recipeIngredient.ingredient.name.toLowerCase()] || 0;
         if (inventoryQuantity < recipeIngredient.quantity) {
             check = html`
                 <p style="color:red;">You do not have the ingredients for this recipe!</p>
             `;
+            break;
         } else {
             check = html`
                 <p style="color:green;">You have the ingredients for this recipe!</p>
             `;
         }
-    });
+    }
     return check;
 }
