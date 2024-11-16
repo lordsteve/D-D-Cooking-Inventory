@@ -6,7 +6,7 @@ import path from 'path';
 import 'reflect-metadata';
 import routes from './routes';
 
-require('dotenv').config();
+if (!process.env.PORT) require('dotenv').config();
 
 const server = http.createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
     const { method, headers } = req;
@@ -89,8 +89,8 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
     }
 
 });
-const port = parseInt(process.env.PORT ?? '8080');
-const host = process.env.HOST ?? 'localhost';
+const port = parseInt(process.env.PORT || '8080');
+const host = process.env.HOST || '0.0.0.0';
 const reloadPort = process.env.RELOAD_PORT;
 server.listen(port, host, () => {
     console.log(`Static server started on http://${host}:${port}.`);

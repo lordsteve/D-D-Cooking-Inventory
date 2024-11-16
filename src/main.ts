@@ -13,9 +13,9 @@ switch (location.pathname) {
         ));
         views.home();
     break;
-    case '/about':
-        el.body.appendChild(views.aboutTemplate);
-        views.about();
+    case '/inventory':
+        el.body.appendChild(views.inventoryTemplate);
+        views.inventory();
     default:
         getHtml(location.pathname)
             .then((page) => {

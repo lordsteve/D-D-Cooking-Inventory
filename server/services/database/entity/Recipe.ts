@@ -13,6 +13,18 @@ export class Recipe {
     @Column()
     description!: string
 
+    @Column()
+    skillCheck!: string
+
+    @Column()
+    benefits!: string
+
+    @Column()
+    downside!: string
+
+    @Column()
+    isHidden!: boolean
+
     @OneToMany(() => RecipeIngredient, recipeToIngredient => recipeToIngredient.recipe, {
         eager: true, 
         cascade: true

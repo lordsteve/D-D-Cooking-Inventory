@@ -5,6 +5,9 @@ const homeTemplate = (
     heading: string,
     welcome: string | null = null
 ) => {
+    const params = new URLSearchParams(window.location.search);
+    const isAdmin = params.get('admin') === 'true';
+
     welcome = !welcome ? '' : htmlstring`<p>${welcome}</p>`;
 
     return html`
@@ -14,11 +17,12 @@ const homeTemplate = (
                 <h1>${heading}</h1>
                 ${welcome}
                 <div id="recipes"></div>
-                <form id="new-recipe" style="display:flex;flex-direction:column;">
+
+                ${isAdmin ? `<form id="new-recipe" style="display:flex;flex-direction:column;">
                     <input required type="text" placeholder="New Recipe Name" name="recipe-name">
                     <input required type="text" placeholder="Description" name="recipe-description">
                     <button type="submit">Add Recipe</button>
-                </form>
+                </form>` : ''}
             </section>
         </div>
     </el-home>
