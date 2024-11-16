@@ -6,4 +6,4 @@ tmp
 temp
 .env
 server/comp
-www
+www/views
