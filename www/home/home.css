@@ -1,0 +1,12 @@
+
+el-home {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+.ingredients {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align: left;
+}

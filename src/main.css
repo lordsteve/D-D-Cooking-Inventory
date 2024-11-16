@@ -71,7 +71,7 @@ h1 {
 .content-slate section {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     padding: 1rem;
     border-radius: 5px;

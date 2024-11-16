@@ -36,7 +36,8 @@ el-home {
 .ingredients {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-evenly;
+  align: left;
 }
 
 /* src/views/nav/nav.css */
@@ -145,6 +146,7 @@ a {
   text-decoration: none;
   color: inherit;
   font-weight: bold;
+  font-size: 40px;
 }
 a:hover {
   text-decoration: underline;
@@ -176,7 +178,7 @@ h1 {
 .content-slate section {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 1rem;
   border-radius: 5px;
