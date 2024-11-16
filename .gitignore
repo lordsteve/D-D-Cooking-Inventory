@@ -7,3 +7,5 @@ temp
 .env
 server/comp
 www/views
+
+www/main.js

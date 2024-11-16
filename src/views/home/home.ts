@@ -180,7 +180,7 @@ export default function home() {
                         const formData = new FormData(form);
                         const name = formData.get('recipe-name');
                         const description = formData.get('recipe-description');
-                        post<Recipe>('/data/add-recipe', { name, description }).then((recipe) => {
+                        post<Recipe>('/data/add-recipe', { name, description }).then(async (recipe) => {
                             const recipeEl = html`
                                 <div id="recipe-${recipe.id}"></div>
                             `;
@@ -188,21 +188,98 @@ export default function home() {
                             recipeEl.appendChild(html`
                                 <div>
                                     <h2>${recipe.name}</h2>
-                                    <h3>${recipe.description}</h3>
+                                    <input id="description-${recipe.id}" type="text" value="${recipe.description}" />
+                                    <p>Skill Check: <input id="skill-check-${recipe.id}" type="text" value="${recipe.skillCheck}" /></p>
+                                    <p>Benefits: <input id="benefits-${recipe.id}" type="text" value="${recipe.benefits}" /></p>
+                                    <p>Downside: <input id="downside-${recipe.id}" type="text" value="${recipe.downside}" /></p>
+                                    <p>Hidden: <input id="is-hidden${recipe.id}" type="checkbox" ${recipe.isHidden ? 'checked' : ''} /></p>
                                     <button id="delete-recipe-${recipe.id}"><span class="fa fa-trash"></span></button>
                                 </div>
                             `);
-                            const deleteButton = recipeEl.querySelector<HTMLButtonElement>(`#delete-recipe-${recipe.id}`);
+                            console.log(recipeEl);
+                            el.inputs.id(`description-${recipe.id}`).onkeydown = (e) => {
+                                if (e.key !== 'Enter') return;
+                                const description = (e.target as HTMLInputElement).value;
+                                put<Recipe>('/data/update-recipe', { id: recipe.id, description }).then(() => {});
+                            }
+                            el.inputs.id(`skill-check-${recipe.id}`).onkeydown = (e) => {
+                                if (e.key !== 'Enter') return;
+                                const skillCheck = (e.target as HTMLInputElement).value;
+                                put<Recipe>('/data/update-recipe', { id: recipe.id, skillCheck }).then(() => {});
+                            }
+                            el.inputs.id(`benefits-${recipe.id}`).onkeydown = (e) => {
+                                if (e.key !== 'Enter') return;
+                                const benefits = (e.target as HTMLInputElement).value;
+                                put<Recipe>('/data/update-recipe', { id: recipe.id, benefits }).then(() => {});
+                            }
+                            el.inputs.id(`downside-${recipe.id}`).onkeydown = (e) => {
+                                if (e.key !== 'Enter') return;
+                                const downside = (e.target as HTMLInputElement).value;
+                                put<Recipe>('/data/update-recipe', { id: recipe.id, downside }).then(() => {});
+                            }
+                            el.inputs.id(`is-hidden${recipe.id}`).onchange = (e) => {
+                                const isHidden = (e.target as HTMLInputElement).checked;
+                                put<Recipe>('/data/update-recipe', { id: recipe.id, isHidden }).then(() => {});
+                            }
+                            el.inputs.id(`description-${recipe.id}`).onblur = (e) => {
+                                const description = (e.target as HTMLInputElement).value;
+                                if (description === recipe.description) return;
+                                put<Recipe>('/data/update-recipe', { id: recipe.id, description }).then(() => {});
+                            }
+                            el.inputs.id(`skill-check-${recipe.id}`).onblur = (e) => {
+                                const skillCheck = (e.target as HTMLInputElement).value;
+                                if (skillCheck === recipe.skillCheck) return;
+                                put<Recipe>('/data/update-recipe', { id: recipe.id, skillCheck }).then(() => {});
+                            }
+                            el.inputs.id(`benefits-${recipe.id}`).onblur = (e) => {
+                                const benefits = (e.target as HTMLInputElement).value;
+                                if (benefits === recipe.benefits) return;
+                                put<Recipe>('/data/update-recipe', { id: recipe.id, benefits }).then(() => {});
+                            }
+                            el.inputs.id(`downside-${recipe.id}`).onblur = (e) => {
+                                const downside = (e.target as HTMLInputElement).value;
+                                if (downside === recipe.downside) return;
+                                put<Recipe>('/data/update-recipe', { id: recipe.id, downside }).then(() => {});
+                            }
+                            const deleteButton = recipeDiv.querySelector<HTMLButtonElement>(`#delete-recipe-${recipe.id}`);
                             if (deleteButton) 
                                 deleteButton.onclick = () => {
                                     del<Recipe>('/data/delete-recipe', { id: recipe.id }).then(() => {
                                         recipeEl.remove();
                                     });
                                 }
+                            recipeEl.appendChild(await checkInventory(recipe.recipeIngredients));
                             recipeEl.appendChild(html`<p>Ingredients:</p>`);
+                            recipe.recipeIngredients.forEach((recipeIngredient) => {
+                                const ingElement = html`
+                                    <div class="ingredients">
+                                        <p title="${recipeIngredient.ingredient.description}">${recipeIngredient.ingredient.name}</p>
+                                        <input id="recipe-ingredient-quantity-${recipeIngredient.id}" type="number" value="${recipeIngredient.quantity}" />
+                                        <button id="delete-recipe-ingredient-${recipeIngredient.id}"><span  class="fa fa-trash"></span></button>
+                                    </div>
+                                `
+                                recipeEl.appendChild(ingElement);
+                                el.inputs.id(`recipe-ingredient-quantity-${recipeIngredient.id}`).onkeydown = (e) => {
+                                    if (e.key !== 'Enter') return;
+                                    const quantity = (e.target as HTMLInputElement).value;
+                                    put<RecipeIngredient>('/data/update-recipe-ingredient', { id: recipeIngredient.id, quantity }).then(() => {});
+                                }
+                                el.inputs.id(`recipe-ingredient-quantity-${recipeIngredient.id}`).onblur = (e) => {
+                                    const quantity = (e.target as HTMLInputElement).value;
+                                    if (quantity === recipeIngredient.quantity.toString()) return;
+                                    put<RecipeIngredient>('/data/update-recipe-ingredient', { id: recipeIngredient.id, quantity }).then(() => {});
+                                }
+                                const deleteIngButton = recipeEl.querySelector<HTMLButtonElement>(`#delete-recipe-ingredient-${recipeIngredient.id}`)
+                                if (!deleteIngButton) return;
+                                deleteIngButton.onclick = () => {
+                                    del<RecipeIngredient>('/data/delete-ingredient', { id: recipeIngredient.id }).then(() => {
+                                        ingElement.remove();
+                                    });
+                                }
+                            });
                             recipeEl.appendChild(html`
                                 <form id="new-ingredient-${recipe.id}" style="display:flex;flex-direction:column;">
-                                    <input required type="text" placeholder="Add Ingredient" name="ingredient-name">
+                                    <input required type="text" placeholder="New Ingredient Name" name="ingredient-name">
                                     <input required type="text" placeholder="Description" name="ingredient-description">
                                     <input required type="number" placeholder="Quantity" name="ingredient-quantity">
                                     <input type="hidden" value="${recipe.id}" name="ingredient-recipe-id">

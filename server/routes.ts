@@ -153,7 +153,11 @@ export default async function routes(req: http.IncomingMessage, res: http.Server
                 return Database.initialize().then(async () => {
                     const recipeInsert = recipeRepository.create({
                         name: recipeBody.name,
-                        description: recipeBody.description
+                        description: recipeBody.description,
+                        skillCheck: '',
+                        benefits: '',
+                        downside: '',
+                        isHidden: true
                     });
                     await recipeRepository.save(recipeInsert);
                     return {
