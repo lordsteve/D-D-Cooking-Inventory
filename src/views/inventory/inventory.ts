@@ -5,11 +5,11 @@ import { get } from '@services/request';
 export default async function about() {
     el.title.textContent = 'Ingredient Inventory';
 
-    const inventoryDiv = el.divs.id('inventory');
+    const inventoryDiv = el.divs?.id('inventory');
     const inventory = await fetchInventory();
 
     Object.entries(inventory).forEach(([ingredient, quantity]) => {
-        inventoryDiv.appendChild(html`
+        inventoryDiv?.appendChild(html`
             <p>${ingredient}: ${quantity}</p>
         `);
     });

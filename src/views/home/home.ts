@@ -8,9 +8,10 @@ export default function home() {
     const isAdmin = params.get('admin') === 'true';
 
     el.title.textContent = 'D&D Cooking Inventory!';
-    const recipeDiv = el.divs.id('recipes');
+    const recipeDiv = el.divs?.id('recipes');
+    if (!recipeDiv) return;
 
-    const form = el.forms.id('new-recipe') as HTMLFormElement;
+    const form = el.forms?.id('new-recipe') as HTMLFormElement;
     if (form)
         form.onsubmit = (e) => {
         e.preventDefault();
@@ -34,6 +35,7 @@ export default function home() {
                 </div>
             `);
             console.log(recipeEl);
+            if (!el.inputs) return;
             el.inputs.id(`description-${recipe.id}`).onkeydown = (e) => {
                 if (e.key !== 'Enter') return;
                 const description = (e.target as HTMLInputElement).value;
@@ -96,6 +98,7 @@ export default function home() {
                     </div>
                 `
                 recipeEl.appendChild(ingElement);
+                if (!el.inputs) return;
                 el.inputs.id(`recipe-ingredient-quantity-${recipeIngredient.id}`).onkeydown = (e) => {
                     if (e.key !== 'Enter') return;
                     const quantity = (e.target as HTMLInputElement).value;
@@ -123,9 +126,10 @@ export default function home() {
                     <button type="submit">Add Ingredient</button>
                 </form>
             `);
+            if (!el.forms) return;
             el.forms.id(`new-ingredient-${recipe.id}`).onsubmit = (e) => {
                 e.preventDefault();
-                const formData = new FormData(el.forms.id(`new-ingredient-${recipe.id}`) as HTMLFormElement);
+                const formData = new FormData(el.forms?.id(`new-ingredient-${recipe.id}`) as HTMLFormElement);
                 const recipeId = formData.get('ingredient-recipe-id');
                 const ingredientName = formData.get('ingredient-name');
                 const ingredientDescription = formData.get('ingredient-description');
@@ -136,6 +140,7 @@ export default function home() {
                     ingredientDescription,
                     ingredientQuantity,
                 }).then((res) => {
+                    if (!el.forms) return;
                     el.forms.id(`new-ingredient-${recipe.id}`).insertAdjacentElement('beforebegin', html`
                         <div class="ingredients">
                             <p title="${res.ingredient.description}">${res.ingredient.name}</p><p>${res.quantity}</p>
@@ -144,6 +149,7 @@ export default function home() {
                     `);
                 });
             }
+            if (!el.formInputs) return;
             el.formInputs.forEach((input) => {if (input.type !== 'hidden') input.value = ''});
         });
     };
@@ -180,6 +186,7 @@ export default function home() {
                     </div>
                 `);
                 if (isAdmin) {
+                    if (!el.inputs) return;
                     el.inputs.id(`description-${recipe.id}`).onkeydown = (e) => {
                         if (e.key !== 'Enter') return;
                         const description = (e.target as HTMLInputElement).value;
@@ -248,6 +255,7 @@ export default function home() {
                     `
                     recipeEl.appendChild(ingElement);
                     if (isAdmin) {
+                        if (!el.inputs) return;
                         el.inputs.id(`recipe-ingredient-quantity-${recipeIngredient.id}`).onkeydown = (e) => {
                             if (e.key !== 'Enter') return;
                             const quantity = (e.target as HTMLInputElement).value;
@@ -282,7 +290,7 @@ export default function home() {
             });
         });
         writeRecipes.then(() => {
-            if(isAdmin)
+            if(isAdmin && el.forms)
             el.forms.forEach((form) => {
                 if (form.id.startsWith('new-ingredient-')) {
                     form.onsubmit = (e) => {
@@ -304,9 +312,12 @@ export default function home() {
                                         <button id="delete-recipe-ingredient-${res.id}"><span class="fa fa-trash"></span></button>
                                     </div>
                                 `);
+                                if (!el.formInputs) return;
                                 el.formInputs.forEach((input) => {if (input.type !== 'hidden') input.value = ''});
+                                if (!el.buttons) return;
                                 el.buttons.id(`delete-recipe-ingredient-${res.id}`).onclick = () => {
                                     del<RecipeIngredient>('/data/delete-ingredient', { id: res.id }).then(() => {
+                                        if (!el.buttons) return;
                                         el.buttons.id(`delete-recipe-ingredient-${res.id}`).parentElement?.remove();
                                     });
                                 }

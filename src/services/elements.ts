@@ -24,10 +24,11 @@ export default class El {
             return el;
         }
     }
-    private static getElements = <T extends HTMLElement = HTMLElement>(selector: string): NodeListOf<T> => {
+    private static getElements = <T extends HTMLElement = HTMLElement>(selector: string): NodeListOf<T> | null => {
         let els = document.querySelectorAll<T>(selector);
         if (!els || els.length == 0) {
-            throw new Error(`Nodes with selector "${selector}" not found!`);
+            console.error(`Nodes with selector "${selector}" not found!`);
+            return null;
         } else {
             els.id = (id: string) => {
                 const el = [...els].find(el => el.id === id);
