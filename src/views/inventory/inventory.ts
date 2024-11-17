@@ -1,33 +1,17 @@
-import { GoogleSheetsData, Inventory } from '@const/types';
 import el, { html } from '@services/elements';
-import { get } from '@services/request';
+import sheetSvc from '@services/googleSheetsSvc';
 
-export default async function about() {
+export default async function inv() {
     el.title.textContent = 'Ingredient Inventory';
+    const drumstick = el.imgs?.id('drumstick');
 
     const inventoryDiv = el.divs?.id('inventory');
-    const inventory = await fetchInventory();
+    const inventory = await sheetSvc.fetchInventory();
+    drumstick?.remove();
 
     Object.entries(inventory).forEach(([ingredient, quantity]) => {
         inventoryDiv?.appendChild(html`
             <p><span style="font-weight:700;">${ingredient}</span>: ${quantity}</p>
         `);
     });
-}
-
-// Fetch party inventory from Google Sheets
-export async function fetchInventory() {
-    const { SHEET_ID, API_KEY } = await get<{SHEET_ID: string, API_KEY: string}>(`/data/get-inventory`);
-    const data = await get<GoogleSheetsData>(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${API_KEY}`);
-    return parseInventoryData(data.values);
-}
-
-// Convert Google Sheets data to inventory object
-function parseInventoryData(data: GoogleSheetsData['values']) {
-    const inventory: Inventory = {};
-    data.slice(1).forEach(row => { // Skip the header row
-        const [ingredient, quantity] = row;
-        inventory[ingredient.toLowerCase()] = parseInt(quantity, 10);
-    });
-    return inventory;
 }

@@ -1,7 +1,7 @@
 import { Recipe, RecipeIngredient } from '@const/types';
 import el, { html } from '@services/elements';
+import GoogleSheetsService from '@services/googleSheetsSvc';
 import { del, get, post, put } from '@services/request';
-import { fetchInventory } from '@views/inventory/inventory';
 
 export default function home() {
     const params = new URLSearchParams(window.location.search);
@@ -303,7 +303,7 @@ export default function home() {
 }
 
 async function checkInventory(recipeIngredients: RecipeIngredient[]) {
-    const inventory = await fetchInventory()
+    const inventory = await GoogleSheetsService.fetchInventory()
     let check: HTMLElement = html`
         <p style="color:orange;">There are no ingredients for this recipe yet!</p>
     `;
@@ -324,6 +324,6 @@ async function checkInventory(recipeIngredients: RecipeIngredient[]) {
 }
 
 async function haveIngredient(recipeIngredient: RecipeIngredient) {
-    const inventory = await fetchInventory();
+    const inventory = await GoogleSheetsService.fetchInventory();
     return { have: inventory[recipeIngredient.ingredient.name.toLowerCase()] ?? 0, need: recipeIngredient.quantity };
 }
