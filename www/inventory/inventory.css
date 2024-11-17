@@ -1,5 +1,11 @@
 el-about {
     flex-grow: 1;
     display: flex;
-    justify-content: center;
+    justify-content: left;
+    font-family: Montserrat, sans-serif !important;
+}
+
+#inventory {
+width: 900px;
+
 }

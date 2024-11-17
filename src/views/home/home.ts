@@ -27,10 +27,10 @@ export default function home() {
                 <div>
                     <h2>${recipe.name}</h2>
                     <input id="description-${recipe.id}" type="text" value="${recipe.description}" />
-                    <p>Skill Check: <input id="skill-check-${recipe.id}" type="text" value="${recipe.skillCheck}" /></p>
-                    <p>Benefits: <input id="benefits-${recipe.id}" type="text" value="${recipe.benefits}" /></p>
-                    <p>Downside: <input id="downside-${recipe.id}" type="text" value="${recipe.downside}" /></p>
-                    <p>Hidden: <input id="is-hidden${recipe.id}" type="checkbox" ${recipe.isHidden ? 'checked' : ''} /></p>
+                    <p style="font-weight:700">Benefits: <input id="benefits-${recipe.id}" type="text" value="${recipe.benefits}" /></p>
+                    <p style="font-weight:700">Downside: <input id="downside-${recipe.id}" type="text" value="${recipe.downside}" /></p>
+                    <p style="font-weight:700">Hidden: <input id="is-hidden${recipe.id}" type="checkbox" ${recipe.isHidden ? 'checked' : ''} /></p>
+                    <p style="font-weight:700">Skill Check: <input id="skill-check-${recipe.id}" type="text" value="${recipe.skillCheck}" /></p>
                     <button id="delete-recipe-${recipe.id}"><span class="fa fa-trash"></span></button>
                 </div>
             `);
@@ -129,7 +129,7 @@ export default function home() {
             recipes.forEach(async (recipe, i, a) => {
                 if (recipe.isHidden && !isAdmin) return;
                 const recipeEl = html`
-                    <div id="recipe-${recipe.id}"></div>
+                    <div  class="recipecard" id="recipe-${recipe.id}"></div>
                 `
                 recipeDiv.appendChild(recipeEl);
                 recipeEl.appendChild(html`
@@ -139,15 +139,15 @@ export default function home() {
                         ${isAdmin
                             ? `<input id="description-${recipe.id}" type="text" value="${recipe.description}" />`
                             : `<p style="font-style:italic">${recipe.description}</p>`}
-                        <p>Skill Check: ${isAdmin
-                            ? `<input id="skill-check-${recipe.id}" type="text" value="${recipe.skillCheck}" />`
-                            : `<span style="font-style:italic">${recipe.skillCheck}</span>`}</p>
-                        <p>Benefits: ${isAdmin
+                        <p><span style="font-weight:700">Benefits:</span> ${isAdmin
                             ? `<input id="benefits-${recipe.id}" type="text" value="${recipe.benefits}" />`
-                            : `<span style="font-style:italic">${recipe.benefits}</span>`}</p>
-                        <p>Downside: ${isAdmin
+                            : `<span>${recipe.benefits}</span>`}</p>
+                        <p><span style="font-weight:700">Downside:</span> ${isAdmin
                             ? `<input id="downside-${recipe.id}" type="text" value="${recipe.downside}" />`
-                            : `<span style="font-style:italic">${recipe.downside}</span>`}</p>
+                            : `<span>${recipe.downside}</span>`}</p>
+                         <p><span style="font-weight:700">Skill Check:</span> ${isAdmin
+                             ? `<input id="skill-check-${recipe.id}" type="text" value="${recipe.skillCheck}" />`
+                             : `<span>${recipe.skillCheck}</span>`}</p>
                         ${isAdmin
                             ? `<p>Hidden: <input id="is-hidden${recipe.id}" type="checkbox" ${recipe.isHidden ? 'checked' : ''} /></p>`
                             : ''}
@@ -210,15 +210,15 @@ export default function home() {
                             });
                         }
                 }
-                recipeEl.appendChild(html`<p>Ingredients:</p>`);
+                recipeEl.appendChild(html`<p style="font-weight:700; font-size: 18px">Ingredients:</p>`);
                 recipe.recipeIngredients.forEach(async (recipeIngredient) => {
                     const { have, need } = await haveIngredient(recipeIngredient);
                     const ingElement = html`
                         <div class="ingredients">
-                            <p title="${recipeIngredient.ingredient.description}">${recipeIngredient.ingredient.name}</p>
+                            <p style="margin: 1px 1px 1px 20px;font-weight: 600" title="${recipeIngredient.ingredient.description}">${recipeIngredient.ingredient.name}</p>
                             ${isAdmin
                                 ? `<input id="recipe-ingredient-quantity-${recipeIngredient.id}" type="number" value="${recipeIngredient.quantity}" />`
-                                : `<p style="color:${have >= need ? 'green' : 'red'}">(have: ${have}, need: ${need})</p>`}
+                                : `<p style="margin: 1px 1px 1px 20px; color:${have >= need ? 'green' : 'red'}">(have ${have}, need ${need})</p>`}
                             ${isAdmin
                                 ? `<button id="delete-recipe-ingredient-${recipeIngredient.id}"><span  class="fa fa-trash"></span></button>`
                                 : ''}
@@ -309,12 +309,12 @@ async function checkInventory(recipeIngredients: RecipeIngredient[]) {
         const inventoryQuantity = inventory[recipeIngredient.ingredient.name.toLowerCase()] || 0;
         if (inventoryQuantity < recipeIngredient.quantity) {
             check = html`
-                <p style="color:red;">You do not have the ingredients for this recipe!</p>
+                <p style="color:red; font-weight:700;text-align: center;">Missing Ingredients!</p>
             `;
             break;
         } else {
             check = html`
-                <p style="color:green;">You have the ingredients for this recipe!</p>
+                <p style="color:green; font-weight:700;text-align: center;">Ready to Cook!</p>
             `;
         }
     }

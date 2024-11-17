@@ -2,11 +2,18 @@
 el-home {
     flex-grow: 1;
     display: flex;
-    justify-content: center;
+    line-height: auto;
+    background-color:rgb(172, 172, 172);
 }
+
 .ingredients {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-evenly;
-    align: left;
+    text-align: left;
+    line-height: 20px;
+}
+
+.content-slate section {
+
+    width:900px;
 }

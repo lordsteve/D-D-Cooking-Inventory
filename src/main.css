@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('./views');
 
 /* These rules will be true for elements throughout the entire site/app */
@@ -17,7 +17,7 @@
 }
 
 html {
-    font-family: "Nunito", Geneva, Tahoma, sans-serif;
+    font-family: Montserrat, sans-serif !important;
     scroll-behavior: smooth;
     background-color: rgb(200, 200, 200);
 }
@@ -25,16 +25,20 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
     margin: 0;
     min-height: 100vh;
+    line-height: 20px;
+    color:#434343;
 }
 * {
     transition: all 0.35s;
 }
+
+div#recipes{
+
+    width:700px;
+}
+
 a {
     text-decoration: none;
     color: inherit;
@@ -60,25 +64,42 @@ button:active {
 }
 
 h1 {
-    color: var(--ui-color);
+    text-align: center;
 }
+
+h2 {
+    color: #373737;
+    text-align: center;
+}
+
 .content-slate {
     display: flex;
     flex-grow: 1;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color:rgb(172, 172, 172);
+
 }
 .content-slate section {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    padding: 1rem;
+    padding: 20px;
     border-radius: 5px;
     box-shadow: var(--md-shadow);
-    background-color: white;
+    background-color: rgb(244, 244, 244);
     max-width: 900px;
+    
+}
+
+div.recipecard { 
+
+    margin-top: 20px;
+    border: 1px solid #434343;
+    border-radius: 5px;
+    padding: 25px;
 }
 
 /* MOBILE FIRST! */

@@ -10,7 +10,7 @@ export default async function about() {
 
     Object.entries(inventory).forEach(([ingredient, quantity]) => {
         inventoryDiv?.appendChild(html`
-            <p>${ingredient}: ${quantity}</p>
+            <p><span style="font-weight:700;">${ingredient}</span>: ${quantity}</p>
         `);
     });
 }
