@@ -16,7 +16,7 @@ const homeTemplate = (
             <section>
                 <h1>${heading}</h1>
                 ${welcome}
-                <img id="drumstick" src="/drumstick.gif" alt="Drumstick" style="width: 100%; max-width: 300px; margin: 0 auto; display: block;">
+                <img id="drumstick" src="/storage/images/drumstick.gif" alt="Drumstick" style="width: 100%; max-width: 300px; margin: 0 auto; display: block;">
                 <div id="recipes"></div>
 
                 ${isAdmin ? `<form id="new-recipe" style="display:flex;flex-direction:column;">

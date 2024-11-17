@@ -33,17 +33,17 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
             res.setHeader('Content-Type', 'text/plain');
             res.end(token);
             break;
-        case '/drumstick.gif':
-            const gif = fs.readFileSync(path.join(__dirname, '..', '..', 'www', 'drumstick.gif'));
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'image/gif');
-            res.end(gif);
-            break;
         default:
             if (url?.startsWith('/views/') && headers['x-requested-with'] !== 'Elemental') {
                 res.statusCode = 403;
                 res.setHeader('Content-Type', 'text/plain');
                 res.end('403 Forbidden');
+            } else if (url?.startsWith('/storage/')) {
+                const storage = path.join(__dirname, '..', '..', 'www');
+                const file = fs.readFileSync(path.join(storage, url));
+                res.statusCode = 200;
+                res.setHeader('Content-Type', findContentType(findExtension(url)));
+                res.end(file);
             } else if (url?.startsWith('/data/')) {
                 const { response, header, status } = await routes(req, res);
                 res.statusCode = status;
