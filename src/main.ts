@@ -9,7 +9,7 @@ views.nav();
 switch (location.pathname) {
     case '/':
         el.body.appendChild(views.homeTemplate(
-            `Here are your recipes!`
+            ``
         ));
         views.home();
     break;

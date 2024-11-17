@@ -6,6 +6,7 @@ import { fetchInventory } from '@views/inventory/inventory';
 export default function home() {
     const params = new URLSearchParams(window.location.search);
     const isAdmin = params.get('admin') === 'true';
+    const drumstick = el.imgs?.id('drumstick');
 
     el.title.textContent = 'D&D Cooking Inventory!';
     const recipeDiv = el.divs?.id('recipes');
@@ -135,7 +136,7 @@ export default function home() {
                 recipeEl.appendChild(html`
                     <div>
                         <h2>${recipe.name}</h2>
-                        ${(await checkInventory(recipe.recipeIngredients)).outerHTML}
+                        ${(await checkInventory(recipe.recipeIngredients)).outerHTML && drumstick?.remove()}
                         ${isAdmin
                             ? `<input id="description-${recipe.id}" type="text" value="${recipe.description}" />`
                             : `<p style="font-style:italic">${recipe.description}</p>`}
