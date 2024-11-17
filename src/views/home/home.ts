@@ -38,7 +38,7 @@ export default function home() {
                         <input id="description-${recipe.id}" type="text" value="${recipe.description}" />
                         <p style="font-weight:700">Benefits: <input id="benefits-${recipe.id}" type="text" value="${recipe.benefits}" /></p>
                         <p style="font-weight:700">Downside: <input id="downside-${recipe.id}" type="text" value="${recipe.downside}" /></p>
-                        <p style="font-weight:700">Hidden: <input id="is-hidden${recipe.id}" type="checkbox" ${recipe.isHidden ? 'checked' : ''} /></p>
+                        <p style="font-weight:700">Hidden: <input id="is-hidden-${recipe.id}" type="checkbox" ${recipe.isHidden ? 'checked' : ''} /></p>
                         <p style="font-weight:700">Skill Check: <input id="skill-check-${recipe.id}" type="text" value="${recipe.skillCheck}" /></p>
                         <button id="delete-recipe-${recipe.id}"><span class="fa fa-trash"></span></button>
                     </div>
@@ -64,7 +64,7 @@ export default function home() {
                     const downside = (e.target as HTMLInputElement).value;
                     put<Recipe>('/data/update-recipe', { id: recipe.id, downside }).then(() => {});
                 }
-                el.inputs.id(`is-hidden${recipe.id}`).onchange = (e) => {
+                el.inputs.id(`is-hidden-${recipe.id}`).onchange = (e) => {
                     const isHidden = (e.target as HTMLInputElement).checked;
                     put<Recipe>('/data/update-recipe', { id: recipe.id, isHidden }).then(() => {});
                 }
@@ -160,6 +160,9 @@ export default function home() {
             });
         };
 
+    /**
+     * This is the actual beginning of the recipe list.
+     */
     get<Recipe[]>('/data/get-recipes').then((recipes) => {
         let writeRecipes = new Promise<void>((resolve, reject) => {
             recipes.forEach(async (recipe, i, a) => {
@@ -185,7 +188,7 @@ export default function home() {
                              ? `<input id="skill-check-${recipe.id}" type="text" value="${recipe.skillCheck}" />`
                              : `<span>${recipe.skillCheck}</span>`}</p>
                         ${isAdmin
-                            ? `<p>Hidden: <input id="is-hidden${recipe.id}" type="checkbox" ${recipe.isHidden ? 'checked' : ''} /></p>`
+                            ? `<p>Hidden: <input id="is-hidden-${recipe.id}" type="checkbox" ${recipe.isHidden ? 'checked' : ''} /></p>`
                             : ''}
                         ${isAdmin
                             ? `<button id="delete-recipe-${recipe.id}"><span class="fa fa-trash"></span></button>`
@@ -215,7 +218,7 @@ export default function home() {
                         const downside = (e.target as HTMLInputElement).value;
                         put<Recipe>('/data/update-recipe', { id: recipe.id, downside }).then(() => {});
                     }
-                    el.inputs.id(`is-hidden${recipe.id}`).onchange = (e) => {
+                    el.inputs.id(`is-hidden-${recipe.id}`).onchange = (e) => {
                         const isHidden = (e.target as HTMLInputElement).checked;
                         put<Recipe>('/data/update-recipe', { id: recipe.id, isHidden }).then(() => {});
                     }
@@ -248,41 +251,45 @@ export default function home() {
                         }
                 }
                 recipeEl.appendChild(html`<p style="font-weight:700; font-size: 18px">Ingredients:</p>`);
-                recipe.recipeIngredients.forEach(async (recipeIngredient) => {
-                    const { have, need } = await haveIngredient(recipeIngredient);
-                    const ingElement = html`
-                        <div class="ingredients">
-                            <p style="margin: 1px 1px 1px 20px;font-weight: 600" title="${recipeIngredient.ingredient.description}">${recipeIngredient.ingredient.name}</p>
-                            ${isAdmin
-                                ? `<input id="recipe-ingredient-quantity-${recipeIngredient.id}" type="number" value="${recipeIngredient.quantity}" />`
-                                : `<p style="margin: 1px 1px 1px 20px; color:${have >= need ? 'green' : 'red'}">(have ${have}, need ${need})</p>`}
-                            ${isAdmin
-                                ? `<button id="delete-recipe-ingredient-${recipeIngredient.id}"><span  class="fa fa-trash"></span></button>`
-                                : ''}
-                        </div>
-                    `
-                    recipeEl.appendChild(ingElement);
-                    if (isAdmin) {
-                        if (!el.inputs) return;
-                        el.inputs.id(`recipe-ingredient-quantity-${recipeIngredient.id}`).onkeydown = (e) => {
-                            if (e.key !== 'Enter') return;
-                            const quantity = (e.target as HTMLInputElement).value;
-                            put<RecipeIngredient>('/data/update-recipe-ingredient', { id: recipeIngredient.id, quantity }).then(() => {});
+                let writeIngredients = new Promise<void>((resolve, reject) => {
+                    recipe.recipeIngredients.forEach(async (recipeIngredient, i, a) => {
+                        const { have, need } = await haveIngredient(recipeIngredient);
+                        const ingElement = html`
+                            <div class="ingredients">
+                                <p style="margin: 1px 1px 1px 20px;font-weight: 600" title="${recipeIngredient.ingredient.description}">${recipeIngredient.ingredient.name}</p>
+                                ${isAdmin
+                                    ? `<input id="recipe-ingredient-quantity-${recipeIngredient.id}" type="number" value="${recipeIngredient.quantity}" />`
+                                    : `<p style="margin: 1px 1px 1px 20px; color:${have >= need ? 'green' : 'red'}">(have ${have}, need ${need})</p>`}
+                                ${isAdmin
+                                    ? `<button id="delete-recipe-ingredient-${recipeIngredient.id}"><span  class="fa fa-trash"></span></button>`
+                                    : ''}
+                            </div>
+                        `
+                        recipeEl.appendChild(ingElement);
+                        if (isAdmin) {
+                            if (!el.inputs) return;
+                            el.inputs.id(`recipe-ingredient-quantity-${recipeIngredient.id}`).onkeydown = (e) => {
+                                if (e.key !== 'Enter') return;
+                                const quantity = (e.target as HTMLInputElement).value;
+                                put<RecipeIngredient>('/data/update-recipe-ingredient', { id: recipeIngredient.id, quantity }).then(() => {});
+                            }
+                            el.inputs.id(`recipe-ingredient-quantity-${recipeIngredient.id}`).onblur = (e) => {
+                                const quantity = (e.target as HTMLInputElement).value;
+                                if (quantity === recipeIngredient.quantity.toString()) return;
+                                put<RecipeIngredient>('/data/update-recipe-ingredient', { id: recipeIngredient.id, quantity }).then(() => {});
+                            }
+                            const deleteIngButton = recipeEl.querySelector<HTMLButtonElement>(`#delete-recipe-ingredient-${recipeIngredient.id}`)
+                            if (!deleteIngButton) return;
+                            deleteIngButton.onclick = () => {
+                                del<RecipeIngredient>('/data/delete-ingredient', { id: recipeIngredient.id }).then(() => {
+                                    ingElement.remove();
+                                });
+                            }
                         }
-                        el.inputs.id(`recipe-ingredient-quantity-${recipeIngredient.id}`).onblur = (e) => {
-                            const quantity = (e.target as HTMLInputElement).value;
-                            if (quantity === recipeIngredient.quantity.toString()) return;
-                            put<RecipeIngredient>('/data/update-recipe-ingredient', { id: recipeIngredient.id, quantity }).then(() => {});
-                        }
-                        const deleteIngButton = recipeEl.querySelector<HTMLButtonElement>(`#delete-recipe-ingredient-${recipeIngredient.id}`)
-                        if (!deleteIngButton) return;
-                        deleteIngButton.onclick = () => {
-                            del<RecipeIngredient>('/data/delete-ingredient', { id: recipeIngredient.id }).then(() => {
-                                ingElement.remove();
-                            });
-                        }
-                    }
+                        if (a.length > i+1) resolve();
+                    });
                 });
+                await writeIngredients;
                 if (isAdmin)
                     recipeEl.appendChild(html`
                         <form id="new-ingredient-${recipe.id}" style="display:flex;flex-direction:column;">
