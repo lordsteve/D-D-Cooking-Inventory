@@ -136,7 +136,7 @@ export default function home() {
                 recipeEl.appendChild(html`
                     <div>
                         <h2>${recipe.name}</h2>
-                        ${(await checkInventory(recipe.recipeIngredients)).outerHTML && drumstick?.remove()}
+                        ${(await checkInventory(recipe.recipeIngredients)).outerHTML}
                         ${isAdmin
                             ? `<input id="description-${recipe.id}" type="text" value="${recipe.description}" />`
                             : `<p style="font-style:italic">${recipe.description}</p>`}
@@ -157,6 +157,7 @@ export default function home() {
                             : ''}
                     </div>
                 `);
+                drumstick?.remove();
                 if (isAdmin) {
                     if (!el.inputs) return;
                     el.inputs.id(`description-${recipe.id}`).onkeydown = (e) => {
