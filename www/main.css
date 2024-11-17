@@ -73,11 +73,12 @@ nav li a:hover {
 }
 
 /* src/views/inventory/inventory.css */
-el-about {
+el-inv {
   flex-grow: 1;
   display: flex;
   justify-content: left;
   font-family: Montserrat, sans-serif !important;
+  background-color: rgb(172, 172, 172);
 }
 #inventory {
   width: 900px;
@@ -184,7 +185,6 @@ h2 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgb(172, 172, 172);
 }
 .content-slate section {
   display: flex;

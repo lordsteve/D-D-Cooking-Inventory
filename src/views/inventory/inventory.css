@@ -1,11 +1,12 @@
-el-about {
+el-inv {
     flex-grow: 1;
     display: flex;
     justify-content: left;
     font-family: Montserrat, sans-serif !important;
+    background-color:rgb(172, 172, 172);
 }
 
 #inventory {
-width: 900px;
+    width: 900px;
 
 }
