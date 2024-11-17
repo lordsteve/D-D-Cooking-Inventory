@@ -135,6 +135,7 @@ export default function home() {
                 recipeEl.appendChild(html`
                     <div>
                         <h2>${recipe.name}</h2>
+                        ${(await checkInventory(recipe.recipeIngredients)).outerHTML}
                         ${isAdmin
                             ? `<input id="description-${recipe.id}" type="text" value="${recipe.description}" />`
                             : `<p style="font-style:italic">${recipe.description}</p>`}
@@ -209,7 +210,6 @@ export default function home() {
                             });
                         }
                 }
-                recipeEl.appendChild(await checkInventory(recipe.recipeIngredients));
                 recipeEl.appendChild(html`<p>Ingredients:</p>`);
                 recipe.recipeIngredients.forEach(async (recipeIngredient) => {
                     const { have, need } = await haveIngredient(recipeIngredient);
@@ -302,7 +302,7 @@ export default function home() {
 
 async function checkInventory(recipeIngredients: RecipeIngredient[]) {
     const inventory = await fetchInventory()
-    let check: Node = html`
+    let check: HTMLElement = html`
         <p style="color:orange;">There are no ingredients for this recipe yet!</p>
     `;
     for (const recipeIngredient of recipeIngredients) {
