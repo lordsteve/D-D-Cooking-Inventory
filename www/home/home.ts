@@ -38,7 +38,7 @@ export default function home() {
                         <input id="description-${recipe.id}" type="text" value="${recipe.description}" />
                         <p style="font-weight:700">Benefits: <input id="benefits-${recipe.id}" type="text" value="${recipe.benefits}" /></p>
                         <p style="font-weight:700">Downside: <input id="downside-${recipe.id}" type="text" value="${recipe.downside}" /></p>
-                        <p style="font-weight:700">Hidden: <input id="is-hidden-${recipe.id}" type="checkbox" ${recipe.isHidden ? 'checked' : ''} /></p>
+                        <p style="font-weight:700">Hidden: <input id="is-hidden${recipe.id}" type="checkbox" ${recipe.isHidden ? 'checked' : ''} /></p>
                         <p style="font-weight:700">Skill Check: <input id="skill-check-${recipe.id}" type="text" value="${recipe.skillCheck}" /></p>
                         <button id="delete-recipe-${recipe.id}"><span class="fa fa-trash"></span></button>
                     </div>
@@ -64,7 +64,7 @@ export default function home() {
                     const downside = (e.target as HTMLInputElement).value;
                     put<Recipe>('/data/update-recipe', { id: recipe.id, downside }).then(() => {});
                 }
-                el.inputs.id(`is-hidden-${recipe.id}`).onchange = (e) => {
+                el.inputs.id(`is-hidden${recipe.id}`).onchange = (e) => {
                     const isHidden = (e.target as HTMLInputElement).checked;
                     put<Recipe>('/data/update-recipe', { id: recipe.id, isHidden }).then(() => {});
                 }

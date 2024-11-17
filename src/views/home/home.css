@@ -15,5 +15,22 @@ el-home {
 
 .content-slate section {
 
-    width:900px;
+    width:100%;
+}
+
+
+/* MOBILE FIRST! */
+@media screen and (min-width: 768px) {
+    .content-slate {
+        margin: 0;
+    }
+    .content-slate section {
+        padding: 1rem 1rem;
+    }
+
+    p {
+
+        font-size: 2.5vw;
+        line-height: 1.8em;
+    }
 }
