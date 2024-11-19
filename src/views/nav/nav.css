@@ -1,16 +1,16 @@
 nav {
     width: 100%;
-    box-shadow: var(--lg-shadow);
-    font-size: 30px;
+    font-size: 2em;
     font-family: Montserrat, sans-serif !important;
-    display: flex;
-    justify-content: space-evenly; /* Evenly spaced items by default */
     background-color: var(--ui-color);
+    display: flex; /* Aligns side by side on desktop */
+    justify-content: center; /* Centers the items horizontally */
 }
 
 .menu-item {
     text-align: center;
     padding: 20px;
+    align-items: center; /* Centers content within each item */
 }
 
 .menu-item a {
@@ -24,19 +24,20 @@ nav {
 
 .menu-item a:hover {
     color: white;
-    transform: scale(0.5);
-    transition: all 0.3s ease-in-out 0.2s;
+    transform: scale(1.2);
+    transition: all 0.1s ease-in-out 0.1s;
+    text-decoration: none !important;
 }
 
 /* Mobile-specific styles */
-@media screen and (min-width: 768px) {
+@media screen and (max-width: 768px) { /* Use max-width for mobile */
     nav {
         flex-direction: column; /* Stacks the divs vertically */
         align-items: center; /* Centers the stacked divs */
     }
 
     .menu-item {
-        width: 100%; /* Make each div take full width */
-        padding: 5px; /* Adjust spacing for mobile */
+        width: 100%; /* Make each item take full width on mobile */
+        padding: 10px; /* Adjust spacing for mobile */
     }
 }
