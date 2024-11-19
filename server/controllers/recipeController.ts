@@ -1,5 +1,5 @@
-import { Database, GoogleSheetsService } from "services";
 import http from "http";
+import { Database, GoogleSheetsService } from "services";
 import { Recipe } from "services/database/entity/Recipe";
 import { RecipeIngredient } from "services/database/entity/RecipeIngredient";
 import { readBody } from "../main";
@@ -48,8 +48,8 @@ export default class RecipeController {
     static async addRecipe(req: http.IncomingMessage, res: http.ServerResponse) {
         const body = await readBody(req);
         if (
-            !body.recipeName || !body.recipeDescription || !body.recipeIngredients ||
-            !(typeof body.recipeName === 'string') || !(typeof body.recipeDescription === 'string') || !(body.recipeIngredients instanceof Array)
+            !body.name || !body.description ||
+            !(typeof body.name === 'string') || !(typeof body.description === 'string')
         ) {
             return {
                 response: '400 Bad Request',
@@ -59,18 +59,10 @@ export default class RecipeController {
         }
         return Database.initialize().then(async () => {
             const recipe = recipeRepository.create({
-                name: body.recipeName,
-                description: body.recipeDescription
+                name: body.name,
+                description: body.description
             });
             await recipeRepository.save(recipe);
-            for (const ingredient of body.recipeIngredients) {
-                const recipeIngredient = recipeIngredientRepository.create({
-                    recipe,
-                    ingredient,
-                    quantity: ingredient.quantity
-                });
-                await recipeIngredientRepository.save(recipeIngredient);
-            }
             return {
                 response: JSON.stringify(recipe),
                 header: 'application/json',
