@@ -320,10 +320,24 @@ export default function home() {
                         }).then((res) => {
                             form.insertAdjacentElement('beforebegin', html`
                                 <div class="ingredients">
-                                    <p title="${res.ingredient.description}">${res.ingredient.name}</p><p>${res.quantity}</p>
+                                    <p style="margin: 1px 1px 1px 20px;font-weight: 600" title="${res.ingredient.description}">
+                                        ${res.ingredient.name}
+                                    </p>
+                                    <input id="recipe-ingredient-quantity-${res.id}" type="number" value="${res.quantity}" />
                                     <button id="delete-recipe-ingredient-${res.id}"><span class="fa fa-trash"></span></button>
                                 </div>
                             `);
+                            if (!el.inputs) return;
+                            el.inputs.id(`recipe-ingredient-quantity-${res.id}`).onkeydown = (e) => {
+                                if (e.key !== 'Enter') return;
+                                const quantity = (e.target as HTMLInputElement).value;
+                                put<RecipeIngredient>('/data/update-recipe-ingredient', { id: res.id, quantity }).then(() => {});
+                            }
+                            el.inputs.id(`recipe-ingredient-quantity-${res.id}`).onblur = (e) => {
+                                const quantity = (e.target as HTMLInputElement).value;
+                                if (quantity === res.quantity.toString()) return;
+                                put<RecipeIngredient>('/data/update-recipe-ingredient', { id: res.id, quantity }).then(() => {});
+                            }
                             if (!el.formInputs) return;
                             el.formInputs.forEach((input) => {if (input.type !== 'hidden') input.value = ''});
                             if (!el.buttons) return;
