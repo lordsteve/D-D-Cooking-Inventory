@@ -5,7 +5,7 @@ const inv = html`
     <el-inv>
         <div class="content-slate">
             <section>
-                <img id="drumstick" src="/drumstick.gif" alt="Drumstick" style="width: 100%; max-width: 300px; margin: 0 auto; display: block;">
+                <img id="drumstick" src="/storage/images/drumstick.gif" alt="Drumstick" style="width: 100%; max-width: 300px; margin: 0 auto; display: block;">
                 <div id="inventory"></div>
             </section>
         </div>
