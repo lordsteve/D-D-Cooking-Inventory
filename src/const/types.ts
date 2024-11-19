@@ -6,6 +6,7 @@ export class Recipe {
     public benefits!: string
     public downside!: string
     public isHidden!: boolean
+    public canMake!: boolean
     public recipeIngredients!: RecipeIngredient[]
 }
 
@@ -13,6 +14,7 @@ export class RecipeIngredient {
     public id!: number
     public quantity!: number
     public ingredient!: Ingredient
+    public have!: number
 }
 
 export class Ingredient {

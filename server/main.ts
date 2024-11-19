@@ -128,3 +128,24 @@ function findContentType(extension: string): string {
             return 'application/octet-stream';
     }
 }
+
+export function readBody<T = any>(req: http.IncomingMessage): Promise<T> {
+    let body: any = [];
+    return new Promise((resolve, reject) => {
+        req.on('readable', () => {
+            let i;
+            while (null !== (i = req.read())) {
+                body.push(i);
+            }
+        });
+        req.on('end', () => {
+            body = Buffer.concat(body).toString();
+            try {
+                body = JSON.parse(body);
+            } catch {
+                reject('Invalid JSON');
+            }
+            resolve(body as T);
+        });
+    });
+}

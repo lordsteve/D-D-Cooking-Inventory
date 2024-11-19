@@ -1,6 +1,5 @@
 import { Recipe, RecipeIngredient } from '@const/types';
 import el, { html } from '@services/elements';
-import GoogleSheetsService from '@services/googleSheetsSvc';
 import { del, get, post, put } from '@services/request';
 
 export default function home() {
@@ -34,7 +33,10 @@ export default function home() {
                 recipeEl.appendChild(html`
                     <div>
                         <h2>${recipe.name}</h2>
-                        ${(await checkInventory(recipe.recipeIngredients ?? [])).outerHTML}
+                        ${recipe.canMake
+                            ? `<p style="color:green; font-weight:700;text-align: center;">Ready to Cook!</p>`
+                            : `<p style="color:red; font-weight:700;text-align: center;">Missing Ingredients!</p>`
+                        }
                         <input id="description-${recipe.id}" type="text" value="${recipe.description}" />
                         <p style="font-weight:700">Benefits: <input id="benefits-${recipe.id}" type="text" value="${recipe.benefits}" /></p>
                         <p style="font-weight:700">Downside: <input id="downside-${recipe.id}" type="text" value="${recipe.downside}" /></p>
@@ -174,7 +176,10 @@ export default function home() {
                 recipeEl.appendChild(html`
                     <div>
                         <h2>${recipe.name}</h2>
-                        ${(await checkInventory(recipe.recipeIngredients)).outerHTML}
+                        ${recipe.canMake
+                            ? `<p style="color:green; font-weight:700;text-align: center;">Ready to Cook!</p>`
+                            : `<p style="color:red; font-weight:700;text-align: center;">Missing Ingredients!</p>`
+                        }
                         ${isAdmin
                             ? `<input id="description-${recipe.id}" type="text" value="${recipe.description}" />`
                             : `<p style="font-style:italic">${recipe.description}</p>`}
@@ -253,7 +258,8 @@ export default function home() {
                 recipeEl.appendChild(html`<p style="font-weight:700; font-size: 18px">Ingredients:</p>`);
                 let writeIngredients = new Promise<void>((resolve, reject) => {
                     recipe.recipeIngredients.forEach(async (recipeIngredient, i, a) => {
-                        const { have, need } = await haveIngredient(recipeIngredient);
+                        const have = recipeIngredient.have;
+                        const need = recipeIngredient.quantity;
                         const ingElement = html`
                             <div class="ingredients">
                                 <p style="margin: 1px 1px 1px 20px;font-weight: 600" title="${recipeIngredient.ingredient.description}">${recipeIngredient.ingredient.name}</p>
@@ -342,30 +348,4 @@ export default function home() {
             });
         });
     }); 
-}
-
-async function checkInventory(recipeIngredients: RecipeIngredient[]) {
-    const inventory = await GoogleSheetsService.fetchInventory()
-    let check: HTMLElement = html`
-        <p style="color:orange;">There are no ingredients for this recipe yet!</p>
-    `;
-    for (const recipeIngredient of recipeIngredients) {
-        const inventoryQuantity = inventory[recipeIngredient.ingredient.name.toLowerCase()] || 0;
-        if (inventoryQuantity < recipeIngredient.quantity) {
-            check = html`
-                <p style="color:red; font-weight:700;text-align: center;">Missing Ingredients!</p>
-            `;
-            break;
-        } else {
-            check = html`
-                <p style="color:green; font-weight:700;text-align: center;">Ready to Cook!</p>
-            `;
-        }
-    }
-    return check;
-}
-
-async function haveIngredient(recipeIngredient: RecipeIngredient) {
-    const inventory = await GoogleSheetsService.fetchInventory();
-    return { have: inventory[recipeIngredient.ingredient.name.toLowerCase()] ?? 0, need: recipeIngredient.quantity };
 }
