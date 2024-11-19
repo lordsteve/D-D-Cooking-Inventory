@@ -2,18 +2,28 @@ import http from "http";
 import { Database, GoogleSheetsService } from "services";
 import { Recipe } from "services/database/entity/Recipe";
 import { RecipeIngredient } from "services/database/entity/RecipeIngredient";
+import url from "url";
 import { readBody } from "../main";
 
 const recipeRepository = Database.getRepository('Recipe');
-const recipeIngredientRepository = Database.getRepository('RecipeIngredient');
 
 export default class RecipeController {
     static async getRecipes(req: http.IncomingMessage, res: http.ServerResponse) {
+        const parsedUrl = url.parse(req.url ?? '', true);
+        const query = parsedUrl.query;
+        const isAdmin = query.admin === 'true';
         const inventory = await GoogleSheetsService.fetchInventory();
+
         return Database.initialize().then(async () => {
-            const recipes = await recipeRepository.find() as RecipeList[];
+            const recipes = await recipeRepository
+                .createQueryBuilder('recipe')
+                .leftJoinAndSelect('recipe.recipeIngredients', 'recipeIngredients')
+                .leftJoinAndSelect('recipeIngredients.ingredient', 'ingredient')
+                .where(isAdmin ? '1=1' : 'recipe.isHidden = false')
+                .orderBy('recipe.name')
+                .getMany() as RecipeList[];
+
             for (const recipe of recipes) {
-                let canMake = true;
                 for (const recipeIngredient of recipe.recipeIngredients || []) {
                     recipeIngredient.have = inventory[recipeIngredient.ingredient.name.toLowerCase()] || 0;
                 }
@@ -29,6 +39,7 @@ export default class RecipeController {
                 }
                 return 0;
             });
+
             return {
                 response: JSON.stringify(recipes),
                 header: 'application/json',
@@ -89,7 +100,11 @@ export default class RecipeController {
             }
         }
         return Database.initialize().then(async () => {
-            await Database.createQueryBuilder().delete().from('Recipe').where('id = :id', { id: deleteRecipeBody.id }).execute();
+            await Database.createQueryBuilder()
+                .delete().from('Recipe')
+                .where('id = :id', { id: deleteRecipeBody.id })
+                .execute();
+
             return {
                 response: '200 OK',
                 header: 'text/plain',
