@@ -1,12 +1,13 @@
 import http from "http";
 import { Database, Log } from "services";
-import { readBody } from "../main";
+import { RecipeIngredient } from "services/database/entity/RecipeIngredient";
+import BaseController from "./baseController";
 
 const ingredientRepository = Database.getRepository('Ingredient');
 const recipeRepository = Database.getRepository('Recipe');
 const recipeIngredientRepository = Database.getRepository('RecipeIngredient');
 
-export default class IngredientController {
+export default class IngredientController extends BaseController {
     static async getIngredients(req: http.IncomingMessage, res: http.ServerResponse) {
         return Database.initialize().then(async () => {
             const ingredients = await ingredientRepository.find();
@@ -29,7 +30,7 @@ export default class IngredientController {
     }
 
     static async addIngredient(req: http.IncomingMessage, res: http.ServerResponse) {
-        const body = await readBody(req);
+        const body = await this.readBody<RecipeIngredientUpdate>(req);
         if (
             !body.recipeId || !body.ingredientName || !body.ingredientQuantity || !body.ingredientDescription ||
             !(typeof body.recipeId === 'string') || !(typeof body.ingredientName === 'string') || !(typeof body.ingredientQuantity === 'string') || !(typeof body.ingredientDescription === 'string')
@@ -74,7 +75,7 @@ export default class IngredientController {
     }
 
     static async deleteIngredient(req: http.IncomingMessage, res: http.ServerResponse) {
-        const deleteBody: any = await readBody(req);
+        const deleteBody: any = await this.readBody<Partial<RecipeIngredient>>(req);
         if (!deleteBody.id) {
             return {
                 response: '400 Bad Request',
@@ -103,7 +104,7 @@ export default class IngredientController {
     }
 
     static async updateRecipeIngredient(req: http.IncomingMessage, res: http.ServerResponse) {
-        const updateRecipeIngredientBody = await readBody(req);
+        const updateRecipeIngredientBody = await this.readBody<Partial<RecipeIngredient>>(req);
         if (!updateRecipeIngredientBody.id) {
             return {
                 response: '400 Bad Request',
@@ -135,4 +136,11 @@ export default class IngredientController {
             await Database.destroy();
         });
     }
+}
+
+class RecipeIngredientUpdate {
+    recipeId!: string;
+    ingredientName!: string;
+    ingredientQuantity!: string;
+    ingredientDescription!: string;
 }

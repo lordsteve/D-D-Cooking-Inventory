@@ -1,17 +1,14 @@
 import http from "http";
-import { Database, GoogleSheetsService } from "services";
+import { Database, GoogleSheetsService, Log } from "services";
 import { Recipe } from "services/database/entity/Recipe";
 import { RecipeIngredient } from "services/database/entity/RecipeIngredient";
-import url from "url";
-import { readBody } from "../main";
+import BaseController from "./baseController";
 
 const recipeRepository = Database.getRepository('Recipe');
 
-export default class RecipeController {
+export default class RecipeController extends BaseController {
     static async getRecipes(req: http.IncomingMessage, res: http.ServerResponse) {
-        const parsedUrl = url.parse(req.url ?? '', true);
-        const query = parsedUrl.query;
-        const isAdmin = query.admin === 'true';
+        const isAdmin = this.parseUrlQuery(req.url).admin === 'true';
         const inventory = await GoogleSheetsService.fetchInventory();
 
         return Database.initialize().then(async () => {
@@ -46,6 +43,7 @@ export default class RecipeController {
                 status: 200
             }
         }).catch(async error => {
+            Log.write(error);
             return {
                 response: error,
                 header: 'text/plain',
@@ -57,7 +55,7 @@ export default class RecipeController {
     }
 
     static async addRecipe(req: http.IncomingMessage, res: http.ServerResponse) {
-        const body = await readBody(req);
+        const body = await this.readBody<Partial<Recipe>>(req);
         if (
             !body.name || !body.description ||
             !(typeof body.name === 'string') || !(typeof body.description === 'string')
@@ -80,6 +78,7 @@ export default class RecipeController {
                 status: 200
             }
         }).catch(async error => {
+            Log.write(error);
             return {
                 response: error,
                 header: 'text/plain',
@@ -91,7 +90,7 @@ export default class RecipeController {
     }
 
     static async deleteRecipe(req: http.IncomingMessage, res: http.ServerResponse) {
-        const deleteRecipeBody = await readBody(req);
+        const deleteRecipeBody = await this.readBody<Partial<Recipe>>(req);
         if (!deleteRecipeBody?.id) {
             return {
                 response: '400 Bad Request',
@@ -111,7 +110,7 @@ export default class RecipeController {
                 status: 200
             }
         }).catch(async error => {
-            console.log(error);
+            Log.write(error);
             return {
                 response: error,
                 header: 'text/plain',
@@ -123,7 +122,7 @@ export default class RecipeController {
     }
 
     static async updateRecipe(req: http.IncomingMessage, res: http.ServerResponse) {
-        const updateRecipeBody = await readBody(req);
+        const updateRecipeBody = await this.readBody<Partial<Recipe>>(req);
         if (!updateRecipeBody.id) {
             return {
                 response: '400 Bad Request',
@@ -149,7 +148,7 @@ export default class RecipeController {
                 status: 200
             }
         }).catch(async error => {
-            console.log(error);
+            Log.write(error);
             return {
                 response: error,
                 header: 'text/plain',
