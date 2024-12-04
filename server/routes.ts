@@ -1,7 +1,7 @@
 import IngredientController from 'controllers/ingredientController';
 import InventoryController from 'controllers/inventoryController';
+import RecipeController from 'controllers/recipeController';
 import http from 'http';
-import RecipeController from './controllers/recipeController';
 
 export default class Routes {
     constructor(
