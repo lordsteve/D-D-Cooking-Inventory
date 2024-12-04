@@ -1,105 +1,85 @@
-import http from 'http';
-import RecipeController from './controllers/recipeController';
 import IngredientController from 'controllers/ingredientController';
 import InventoryController from 'controllers/inventoryController';
+import http from 'http';
+import RecipeController from './controllers/recipeController';
 
-export default async function routes(req: http.IncomingMessage, res: http.ServerResponse) {
-        const url = req.url?.replace(/\/data\//, '/');
-        if (!url) {
-            return {
-                response: '404 Not Found',
-                header: 'text/plain',
-                status: 404
+export default class Routes {
+    constructor(
+        public req: http.IncomingMessage, 
+        public res: http.ServerResponse
+    ) {
+        this.url = req.url?.replace(/\/data\//, '/') ?? '';
+    }
+
+    @Method('GET')
+    private ['/get-recipes'](req: http.IncomingMessage, res: http.ServerResponse) {
+        return RecipeController.getRecipes(req, res)
+    }
+
+    @Method('GET')
+    private ['/get-ingredients'](req: http.IncomingMessage, res: http.ServerResponse) {
+        return IngredientController.getIngredients(req, res);
+    }
+
+    @Method('POST')
+    private ['/add-ingredient'](req: http.IncomingMessage, res: http.ServerResponse) {
+        return IngredientController.addIngredient(req, res);
+    }
+
+    @Method('DELETE')
+    private ['/delete-ingredient'](req: http.IncomingMessage, res: http.ServerResponse) {
+        return IngredientController.deleteIngredient(req, res);
+    }
+
+    @Method('POST')
+    private ['/add-recipe'](req: http.IncomingMessage, res: http.ServerResponse) {
+        return RecipeController.addRecipe(req, res);
+    }
+
+    @Method('DELETE')
+    private ['/delete-recipe'](req: http.IncomingMessage, res: http.ServerResponse) {
+        return RecipeController.deleteRecipe(req, res);
+    }
+
+    @Method('GET')
+    private ['/get-inventory'](req: http.IncomingMessage, res: http.ServerResponse) {
+        return InventoryController.getInventory();
+    }
+
+    @Method('PUT')
+    private ['/update-recipe'](req: http.IncomingMessage, res: http.ServerResponse) {
+        return RecipeController.updateRecipe(req, res);
+    }
+
+    @Method('PUT')
+    private ['/update-recipe-ingredient'](req: http.IncomingMessage, res: http.ServerResponse) {
+        return IngredientController.updateRecipeIngredient(req, res);
+    }
+
+    get response() {
+        if (this.url === '' || this[this.url] === undefined) return {
+            response: '404 Not Found',
+            header: 'text/plain',
+            status: 404
+        }
+        return this[this.url](this.req, this.res);
+    }
+    [key: string]: any;
+}
+
+function Method(method: string) {
+    return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        const originalMethod = descriptor.value;
+        descriptor.value = function(req: http.IncomingMessage, res: http.ServerResponse) {
+            if (req.method !== method) {
+                return {
+                    response: '405 Method Not Allowed',
+                    header: 'text/plain',
+                    status: 405
+                }
+            } else {
+                return originalMethod.call(this, req, res);
             }
         }
-
-        switch (url) {
-            case '/get-recipes':
-                if (req.method !== 'GET') {
-                    return {
-                        response: '405 Method Not Allowed',
-                        header: 'text/plain',
-                        status: 405
-                    }
-                }
-                return RecipeController.getRecipes(req, res);
-            case '/get-ingredients':
-                if (req.method !== 'GET') {
-                    return {
-                        response: '405 Method Not Allowed',
-                        header: 'text/plain',
-                        status: 405
-                    }
-                }
-                return IngredientController.getIngredients(req, res);
-            case '/add-ingredient':
-                if (req.method !== 'POST') {
-                    return {
-                        response: '405 Method Not Allowed',
-                        header: 'text/plain',
-                        status: 405
-                    }
-                }
-                return IngredientController.addIngredient(req, res);
-            case '/delete-ingredient':
-                if (req.method !== 'DELETE') {
-                    return {
-                        response: '405 Method Not Allowed',
-                        header: 'text/plain',
-                        status: 405
-                    }
-                }
-                return IngredientController.deleteIngredient(req, res);
-            case '/add-recipe':
-                if (req.method !== 'POST') {
-                    return {
-                        response: '405 Method Not Allowed',
-                        header: 'text/plain',
-                        status: 405
-                    }
-                }
-                return RecipeController.addRecipe(req, res);
-            case '/delete-recipe':
-                if (req.method !== 'DELETE') {
-                    return {
-                        response: '405 Method Not Allowed',
-                        header: 'text/plain',
-                        status: 405
-                    }
-                }
-                return RecipeController.deleteRecipe(req, res);
-            case '/get-inventory':
-                if (req.method !== 'GET') {
-                    return {
-                        response: '405 Method Not Allowed',
-                        header: 'text/plain',
-                        status: 405
-                    }
-                }
-                return InventoryController.getInventory();
-            case '/update-recipe':
-                if (req.method !== 'PUT') {
-                    return {
-                        response: '405 Method Not Allowed',
-                        header: 'text/plain',
-                        status: 405
-                    }
-                }
-                return RecipeController.updateRecipe(req, res);
-            case '/update-recipe-ingredient':
-                if (req.method !== 'PUT') {
-                    return {
-                        response: '405 Method Not Allowed',
-                        header: 'text/plain',
-                        status: 405
-                    }
-                }
-                return IngredientController.updateRecipeIngredient(req, res);
-            default:
-                return {
-                    response: '404 Not Found',
-                    header: 'text/plain',
-                    status: 404
-                }
-        }
+    }
 }

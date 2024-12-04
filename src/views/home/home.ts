@@ -166,7 +166,7 @@ export default function home() {
      * This is the actual beginning of the recipe list.
      */
     get<Recipe[]>('/data/get-recipes').then((recipes) => {
-        recipes.forEach(async (recipe, i, a) => {
+        recipes.forEach(async (recipe) => {
             if (recipe.isHidden && !isAdmin) return;
             const recipeEl = html`
                 <div  class="recipecard" id="recipe-${recipe.id}"></div>
@@ -255,7 +255,7 @@ export default function home() {
                     }
             }
             recipeEl.appendChild(html`<p style="font-weight:700; font-size: 18px">Ingredients:</p>`);
-            recipe.recipeIngredients.forEach(async (recipeIngredient, i, a) => {
+            recipe.recipeIngredients.forEach(async (recipeIngredient) => {
                 const have = recipeIngredient.have;
                 const need = recipeIngredient.quantity;
                 const ingElement = html`
@@ -270,8 +270,7 @@ export default function home() {
                     </div>
                 `
                 recipeEl.appendChild(ingElement);
-                if (isAdmin) {
-                    if (!el.inputs) return;
+                if (isAdmin && el.inputs) {
                     el.inputs.id(`recipe-ingredient-quantity-${recipeIngredient.id}`).onkeydown = (e) => {
                         if (e.key !== 'Enter') return;
                         const quantity = (e.target as HTMLInputElement).value;

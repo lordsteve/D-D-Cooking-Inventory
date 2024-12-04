@@ -4,7 +4,7 @@ import fs from 'fs';
 import http from 'http';
 import path from 'path';
 import 'reflect-metadata';
-import routes from './routes';
+import Routes from './routes';
 
 if (!process.env.PORT) require('dotenv').config();
 
@@ -45,7 +45,7 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
                 res.setHeader('Content-Type', findContentType(findExtension(url)));
                 res.end(file);
             } else if (url?.startsWith('/data/')) {
-                const { response, header, status } = await routes(req, res);
+                const { response, header, status } = await new Routes(req, res).response;
                 res.statusCode = status;
                 res.setHeader('Content-Type', header ?? 'application/json');
                 res.end(response);
