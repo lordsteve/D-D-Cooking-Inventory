@@ -42,16 +42,14 @@ export default class RecipeController extends BaseController {
                 header: 'application/json',
                 status: 200
             }
-        }).catch(async error => {
+        }).catch(error => {
             Log.write(error);
             return {
-                response: error,
+                response: JSON.stringify(error),
                 header: 'text/plain',
                 status: 500
             }
-        }).finally(async () => {
-            await Database.destroy();
-        });
+        }).finally(() => Database.destroy());
     }
 
     static async addRecipe(req: http.IncomingMessage, res: http.ServerResponse) {
@@ -80,13 +78,11 @@ export default class RecipeController extends BaseController {
         }).catch(async error => {
             Log.write(error);
             return {
-                response: error,
+                response: JSON.stringify(error),
                 header: 'text/plain',
                 status: 500
             }
-        }).finally(async () => {
-            await Database.destroy();
-        });
+        }).finally(() => Database.destroy());
     }
 
     static async deleteRecipe(req: http.IncomingMessage, res: http.ServerResponse) {
@@ -112,13 +108,11 @@ export default class RecipeController extends BaseController {
         }).catch(async error => {
             Log.write(error);
             return {
-                response: error,
+                response: JSON.stringify(error),
                 header: 'text/plain',
                 status: 500
             }
-        }).finally(async () => {
-            await Database.destroy();
-        });
+        }).finally(() => Database.destroy());
     }
 
     static async updateRecipe(req: http.IncomingMessage, res: http.ServerResponse) {
@@ -150,13 +144,11 @@ export default class RecipeController extends BaseController {
         }).catch(async error => {
             Log.write(error);
             return {
-                response: error,
+                response: JSON.stringify(error),
                 header: 'text/plain',
                 status: 500
             }
-        }).finally(async () => {
-            await Database.destroy();
-        });
+        }).finally(() => Database.destroy());
     }
 }
 

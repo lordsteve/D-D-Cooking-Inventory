@@ -1,4 +1,4 @@
-import { GoogleSheetsService } from "services";
+import { GoogleSheetsService, Log } from "services";
 
 export default class InventoryController {
     static async getInventory() {
@@ -8,9 +8,10 @@ export default class InventoryController {
                 header: 'text/plain',
                 status: 200
             };
-        }).catch((err) => {
+        }).catch((error) => {
+            Log.write(error);
             return {
-                response: err,
+                response: JSON.stringify(error),
                 header: 'text/plain',
                 status: 500
             }

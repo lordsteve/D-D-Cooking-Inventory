@@ -16,7 +16,7 @@ export default class IngredientController extends BaseController {
                 header: 'application/json',
                 status: 200
             }
-        }).catch(async error => {
+        }).catch(error => {
             error = JSON.stringify(error);
             Log.write(error);
             return {
@@ -24,9 +24,7 @@ export default class IngredientController extends BaseController {
                 header: 'text/plain',
                 status: 500
             }
-        }).finally(async () => {
-            await Database.destroy();
-        });
+        }).finally(() => Database.destroy());
     }
 
     static async addIngredient(req: http.IncomingMessage, res: http.ServerResponse) {
@@ -61,7 +59,7 @@ export default class IngredientController extends BaseController {
                 header: 'application/json',
                 status: 200
             }
-        }).catch(async error => {
+        }).catch(error => {
             error = JSON.stringify(error);
             Log.write(error);
             return {
@@ -69,9 +67,7 @@ export default class IngredientController extends BaseController {
                 header: 'text/plain',
                 status: 500
             }
-        }).finally(async () => {
-            await Database.destroy();
-        });
+        }).finally(() => Database.destroy());
     }
 
     static async deleteIngredient(req: http.IncomingMessage, res: http.ServerResponse) {
@@ -90,7 +86,7 @@ export default class IngredientController extends BaseController {
                 header: 'text/plain',
                 status: 200
             }
-        }).catch(async error => {
+        }).catch(error => {
             error = JSON.stringify(error);
             Log.write(error);
             return {
@@ -98,9 +94,7 @@ export default class IngredientController extends BaseController {
                 header: 'text/plain',
                 status: 500
             }
-        }).finally(async () => {
-            await Database.destroy();
-        });
+        }).finally(() => Database.destroy());
     }
 
     static async updateRecipeIngredient(req: http.IncomingMessage, res: http.ServerResponse) {
@@ -124,7 +118,7 @@ export default class IngredientController extends BaseController {
                 header: 'application/json',
                 status: 200
             }
-        }).catch(async error => {
+        }).catch(error => {
             error = JSON.stringify(error);
             Log.write(error);
             return {
@@ -132,9 +126,7 @@ export default class IngredientController extends BaseController {
                 header: 'text/plain',
                 status: 500
             }
-        }).finally(async () => {
-            await Database.destroy();
-        });
+        }).finally(() =>  Database.destroy());
     }
 }
 
