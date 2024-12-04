@@ -29,11 +29,24 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
 
     switch (url) {
         case '/favicon.ico':
+            if (method !== 'GET') {
+                res.statusCode = 405;
+                res.setHeader('Content-Type', 'text/plain');
+                res.end('405 Method Not Allowed');
+                break;
+            }
             res.statusCode = 200;
-            res.setHeader('Content-Type', 'text/plain');
-            res.end('404 Not Found');
+            const favicon = fs.readFileSync(path.join(__dirname, '..', '..', 'www', 'storage', 'images', 'favicon.png'));
+            res.setHeader('Content-Type', 'image/png');
+            res.end(favicon);
             break;
         case '/csrf-token':
+            if (method !== 'GET') {
+                res.statusCode = 405;
+                res.setHeader('Content-Type', 'text/plain');
+                res.end('405 Method Not Allowed');
+                break;
+            }
             const token = Math.random().toString(36).substring(2);
             cache.set('csrf-token-' + sessionId, token);
             res.statusCode = 200;

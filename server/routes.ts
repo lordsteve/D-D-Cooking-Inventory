@@ -9,6 +9,7 @@ export default class Routes {
         public res: http.ServerResponse
     ) {
         this.url = req.url?.replace(/\/data\//, '/') ?? '';
+        this.url = this.url.split('?')[0];
     }
 
     @Method('GET')
