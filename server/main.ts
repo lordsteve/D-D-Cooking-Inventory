@@ -1,9 +1,10 @@
 import 'module-alias/register';
+import 'reflect-metadata';
 
 import fs from 'fs';
 import http from 'http';
+import NodeCache from 'node-cache';
 import path from 'path';
-import 'reflect-metadata';
 import Routes from './routes';
 
 if (!process.env.PORT) require('dotenv').config();
@@ -11,13 +12,17 @@ if (!process.env.PORT) require('dotenv').config();
 const server = http.createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
     const { method, headers } = req;
     let { url } = req;
+    const cache = new NodeCache({ stdTTL: 60 * 60 * 24 });
+    const userAgent = headers['user-agent'];
     
     if (method !== 'GET') {
-        let valid = true;
+        let valid = cache.get('csrf-token-' + userAgent) === headers['csrf-token'];
         if (!valid) {
             res.statusCode = 403;
             res.setHeader('Content-Type', 'text/plain');
             res.end('403 Forbidden');
+        } else {
+            cache.del('csrf-token-' + userAgent);
         }
     }
 
@@ -28,7 +33,8 @@ const server = http.createServer(async (req: http.IncomingMessage, res: http.Ser
             res.end('404 Not Found');
             break;
         case '/csrf-token':
-            const token = '1234567890';
+            const token = Math.random().toString(36).substring(2);
+            cache.set('csrf-token-' + userAgent, token);
             res.statusCode = 200;
             res.setHeader('Content-Type', 'text/plain');
             res.end(token);
