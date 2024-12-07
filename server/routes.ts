@@ -72,6 +72,7 @@ export default class Routes {
     [key: string]: string | http.IncomingMessage | http.ServerResponse | ResponsePromise | RouteFunction;
 }
 
+type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 type RouteFunction = (req: http.IncomingMessage, res: http.ServerResponse) => ResponsePromise;
 type ResponsePromise = Promise<{
     response: any;
@@ -79,7 +80,7 @@ type ResponsePromise = Promise<{
     status: number;
 }>;
 
-function Method(method: string) {
+function Method(method: Method) {
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         const originalMethod: RouteFunction = descriptor.value;
         descriptor.value = function(req: http.IncomingMessage, res: http.ServerResponse) {
